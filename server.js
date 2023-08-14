@@ -1,17 +1,37 @@
+require("dotenv").config();
 const express = require("express");
-const app = express();
-const http = require("http").Server(app);
+const http = require("http");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-
-app.use(express.urlencoded({extended: true}));
-app.use(express.static("public", {extensions: ["html"]}));
-app.use(cookieParser());
-app.use(bodyParser.json({ limit: '500mb' }));
-
 const routes = require("./src/routes");
-app.use("/", routes);
 
-http.listen(8080, () => {
-    console.log("Server started at Port 8080");
-});
+class ExpressServer {
+    constructor() {
+        this.app = express();
+        this.httpServer = http.Server(this.app);
+        this.port = process.env.PORT;
+
+        this.configureMiddleware();
+        this.configureRoutes();
+        this.startServer();
+    }
+
+    configureMiddleware() {
+        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(express.static("public", { extensions: ["html"] }));
+        this.app.use(cookieParser());
+        this.app.use(bodyParser.json({ limit: '500mb' }));
+    }
+
+    configureRoutes() {
+        this.app.use("/", routes);
+    }
+
+    startServer() {
+        this.httpServer.listen(this.port, () => {
+            console.log(`Server started at Port ${this.port}`);
+        });
+    }
+}
+
+const server = new ExpressServer();
