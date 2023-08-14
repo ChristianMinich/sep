@@ -8,11 +8,9 @@
  * @typedef {AbstractController}
  */
 class AbstractController{
-    constructor(orderSvc, storeSvc, userService){
-        this.orderSvc = orderSvc;
-        this.storeSvc = storeSvc;
-        this.userService = userService;
+    constructor(service){
+        this.service = service;
     }
 }
 
-export default AbstractController;
+module.exports = AbstractController;

@@ -1,3 +1,4 @@
+const Service = require('./service');
 const AddressService = require('./addressService');
 const OrderService = require('./orderService');
 const StoreService = require('./storeService');
@@ -11,9 +12,8 @@ const orderServiceObject = new OrderService(repositories.orderRepository, addres
 const userServiceObject = new UserService(repositories.userRepository);
 const storeServiceObject = new StoreService(repositories.userRepository, addressServiceObject, userServiceObject);
 
+const serviceObject = new Service(orderServiceObject, storeServiceObject, userServiceObject);
+
 module.exports = {
-    addressService: addressServiceObject,
-    orderService: orderServiceObject,
-    userService: userServiceObject,
-    storeService: storeServiceObject,
+    Service: serviceObject,
 };

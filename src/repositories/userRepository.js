@@ -1,4 +1,4 @@
-import AbstractRepository from "./abstractRepository.js";
+const AbstractRepository = require("./abstractRepository");
 class UserRepository extends AbstractRepository{
   constructor(database) {
     super(database);

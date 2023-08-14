@@ -1,13 +1,13 @@
-const svc = require("../services");
+const service = require("../services");
 
 const AdminController = require("./adminController");
 const ApiController = require("./apiController");
 const AuthController = require("./authController");
 
-console.log(svc);
+console.log(service);
 
-const apiController = new ApiController(svc.orderService, svc.storeService, svc.userService);
-const authController = new AuthController(svc.storeService, svc.userService);
+const apiController = new ApiController(service);
+const authController = new AuthController(service);
 
 module.exports = {
     AdminController: AdminController,

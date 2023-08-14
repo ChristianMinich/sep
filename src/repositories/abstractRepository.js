@@ -13,4 +13,4 @@ class AbstractRepository{
     }
 }
 
-export default AbstractRepository;
+module.exports = AbstractRepository;

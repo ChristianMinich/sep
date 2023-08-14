@@ -1,4 +1,4 @@
-import AbstractController from "./abstractController.js";
+const AbstractController = require("./abstractController");
 /**
  * Controller for the API routes.
  * @date 8/12/2023 - 11:05:08 PM
@@ -7,8 +7,8 @@ import AbstractController from "./abstractController.js";
  * @typedef {ApiController}
  */
 class ApiController extends AbstractController{
-    constructor(orderSvc, storeSvc, userService){
-        super(orderSvc, storeSvc, userService);
+    constructor(service){
+        super(service);
     }
 
   order(req, res) {

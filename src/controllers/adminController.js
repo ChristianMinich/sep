@@ -1,4 +1,4 @@
-import AbstractController from "./abstractController";
+const AbstractController = require("./abstractController");
 const path = require("path");
 
 /**

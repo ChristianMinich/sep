@@ -1,4 +1,4 @@
-import AbstractController from "./abstractController";
+const AbstractController = require("./abstractController");
 const bcrypt = require("bcrypt");
 const store = require("../models/store");
 /**
@@ -9,8 +9,8 @@ const store = require("../models/store");
  * @typedef {AuthController}
  */
 class AuthController extends AbstractController{
-  constructor(storeService, userService) {
-    super(storeService, userService);
+  constructor(service) {
+    super(service);
   }
   
   
@@ -26,8 +26,7 @@ class AuthController extends AbstractController{
   async login(req, res) {
     try {
       const { username, password } = req.body;
-      console.log("storeSvc", this.storeSvc);
-      console.log("userSvc", this.userSvc);
+      console.log("service" + this.service);
   
       if (!username) {
         return res.status(400).json({ message: "Username not set" });
