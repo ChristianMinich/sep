@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Welcome to the Admin Panel</h1>
+    <div>
+        <button onclick="createStore()">Create Store</button>
+        <form method="get" action="/store-details">
+            <input type="submit" value="Store Details">
+        </form>
+        <button onclick="getAllOrders()">Get All Orders</button>
+        <button onclick="placeOrder()">Place Order</button>
+        <form><!--/auth/generateRegisterCode-->
+            <input type="submit" value="Generate Register Code">
+        </form>
+        <form method="get" action="/admin/login">
+            <input type="submit" value="Login">
+        </form>
+        <form method="get" action="/admin/getSettings">
+            <input type="submit" value="getSettings">
+        </form>
+        <form method="get" action="/admin/setSettings">
+            <input type="submit" value="setSettings">
+        </form>
+        <form method="get" action="/admin/allOrders">
+            <input type="submit" value="allOrders">
+        </form>
+    </div>
+
+    <script>
+        // Function to handle the "Create Store" button click
+        function createStore() {
+            // Redirect to the "create store" page
+            window.location.href = "/createStore";
+        }
+
+        // Function to handle the "Get All Store Details" button click
+        function getAllStores() {
+            // Redirect to the "get all stores" page
+            window.location.href = "get_all_stores.html";
+        }
+
+        // Function to handle the "Get All Orders" button click
+        function getAllOrders() {
+            // Redirect to the "get all orders" page
+            window.location.href = "get_all_orders.html";
+        }
+        function placeOrder() {
+            // Redirect to the "placeOrder" page
+            window.location.href = "/placeOrder";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h2>Place Order</h2>
+        <form method="post" action="/api/order">
+
+        <label for="timestamp">timestamp:</label>
+        <input type="text" name="timestamp" id="timestamp" required><br>
+
+        <label for="employeeName">employeeName:</label>
+        <input type="text" name="employeeName" id="employeeName" required><br>
+
+        <label for="firstName">firstName:</label>
+        <input type="text" name="firstName" id="firstName" required><br>
+
+        <label for="lastName">lastName:</label>
+        <input type="text" name="lastName" id="lastName" required><br>
+
+        <label for="street">street:</label>
+        <input type="text" name="street" id="street" required><br>
+
+        <label for="houseNumber">houseNumber:</label>
+        <input type="text" name="houseNumber" id="houseNumber" required><br>
+
+        <label for="zip">zip:</label>
+        <input type="text" name="zip" id="zip" required><br>
+
+        <label for="packageSize">package Size:</label>
+        <input type="text" name="packageSize" id="packageSize" required><br>
+
+        <label for="handlingInfo">handlingInfo:</label>
+        <input type="text" name="handlingInfo" id="handlingInfo" required><br>
+
+        <label for="deliveryDate">deliveryDate:</label>
+        <input type="date" name="deliveryDate" id="deliveryDate" required><br>
+
+        <input type="submit" value="Submit">
+    </form>
+    </div>
