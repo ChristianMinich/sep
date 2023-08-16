@@ -50,7 +50,7 @@ class Order {
     this.handlingInfo =
       handlingInfo !== null && handlingInfo !== undefined
         ? handlingInfo
-        : this.throwError("handlingInfo");
+        : "";
     this.deliveryDate =
       deliveryDate !== null && deliveryDate !== undefined
         ? deliveryDate
@@ -58,7 +58,7 @@ class Order {
     this.customDropOffPlace = customDropOffPlace;
       customDropOffPlace !== null && customDropOffPlace !== undefined
         ? customDropOffPlace
-        : this.throwError("customDropOffPlace");
+        : "";
   }
 
   throwError(property) {
@@ -68,7 +68,7 @@ class Order {
   validateOrder(order) {
     const orderProperties = Object.values(order);
     for (const property of orderProperties) {
-      if (property === undefined || property === null || property === "") {
+      if (property === undefined || property === null) {
         return false;
       }
     }
