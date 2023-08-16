@@ -1,6 +1,7 @@
 const uuid = require("uuid");
 const fs = require("fs");
 const path = require('path');
+const storeDetailsObject = require("../utils/storeDetailsObject");
 
 const UPLOAD_FOLDER = path.join(__dirname, '../public/Images/');
 
@@ -10,6 +11,40 @@ class StoreService{
         this.addressService = addressService;
         this.userService = userService;
     }
+
+    async storeDetails() {
+        try {
+          const result = await this.database.storeDetails();
+      
+          if (result === null || result === undefined) {
+            return null;
+          }
+      
+          const details = result.map((item) => {
+            return storeDetailsObject.createObject(
+              String(item.id),
+              item.name,
+              item.owner,
+              item.street,
+              item.houseNumber,
+              String(item.zip),
+              "Lingen",
+              item.telephone,
+              item.email,
+              `http://131.173.65.77:8080/Images/${item.logo}.jpg`,
+              `http://131.173.65.77:8080/Images/${item.backgroundImage}.jpg`,
+              item.longitude,
+              item.latitude
+            );
+          });
+      
+          return details.reverse();
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+      }
+      
 
     async addStore(store) {
         if (!store) {
