@@ -1,4 +1,4 @@
-
+const svc = require('../services');
 class Settings{
     constructor(
         storeID,
@@ -15,7 +15,7 @@ class Settings{
     }
 
     updateParameter(){
-        // return svc.storeService.setSettings(this);
+        return svc.storeService.updateParameters(this);
     }
 
     // function for changing logo and background image.
