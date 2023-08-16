@@ -1,30 +1,29 @@
 const AbstractRepository = require("./abstractRepository");
-class UserRepository extends AbstractRepository{
+class UserRepository extends AbstractRepository {
   constructor(database) {
     super(database);
   }
 
-   getPasswordByName(username){
+  getPasswordByName(username) {
     let sql = "SELECT password FROM LOGINCREDENTIALS WHERE username = ?";
-    let params = [username]
+    let params = [username];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- addRegisterCode(code){
+  addRegisterCode(code) {
     let sql = "INSERT INTO REGISTRATION_CODES (CODE) VALUES (?)";
     let params = [code];
     return this.database.updateTable(sql, params);
-}
+  }
 
- getRegisterCode(code){
+  getRegisterCode(code) {
     let sql = "SELECT CODE FROM REGISTRATION_CODES WHERE CODE = ?";
     let params = [code];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- getStoreDataByUsername(username){
-    let sql =
-    `
+  getStoreDataByUsername(username) {
+    let sql = `
     SELECT
         storeID,
         storeName,
@@ -39,17 +38,16 @@ class UserRepository extends AbstractRepository{
     `;
     let params = [username];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- getExistingStore(storeName){
+  getExistingStore(storeName) {
     let sql = "SELECT storeName FROM STORE WHERE storeName = ?";
     let params = [storeName];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- storeDetails(){
-    let sql = 
-    `
+  storeDetails() {
+    let sql = `
     SELECT
         s.storeID AS id,
         s.storeName AS name,
@@ -73,11 +71,10 @@ class UserRepository extends AbstractRepository{
         s.storeID DESC;
     `;
     return this.database.queryAllData(sql);
-}
+  }
 
- insertLoginCredentials(username, password){
-    let sql =
-    `
+  insertLoginCredentials(username, password) {
+    let sql = `
     INSERT INTO
         LOGINCREDENTIALS (username, password)
     VALUES
@@ -85,23 +82,41 @@ class UserRepository extends AbstractRepository{
     `;
     let params = [username, password];
     return this.database.insertTuple(sql, params);
-}
+  }
 
- insertStore(storeName, owner, logo, backgroundImage, telephone, email, zipID, addressID, username){
-    let sql = 
-    `
+  insertStore(
+    storeName,
+    owner,
+    logo,
+    backgroundImage,
+    telephone,
+    email,
+    zipID,
+    addressID,
+    username
+  ) {
+    let sql = `
     INSERT INTO
         STORE (storeName, owner, logo, backgroundImage, telephone, email, zipID, addressID, username)
     VALUES
         (?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
-    let params = [storeName, owner, logo, backgroundImage,telephone, email, zipID, addressID, username];
+    let params = [
+      storeName,
+      owner,
+      logo,
+      backgroundImage,
+      telephone,
+      email,
+      zipID,
+      addressID,
+      username,
+    ];
     return this.database.queryWithoutResponse(sql, params);
-}
+  }
 
- insertAddress(street, houseNumber, longitude, latitude, zipID){
-    let sql = 
-    `
+  insertAddress(street, houseNumber, longitude, latitude, zipID) {
+    let sql = `
     INSERT INTO
         ADDRESS (street, houseNumber, longitude, latitude, zipID)
     VALUES
@@ -109,47 +124,46 @@ class UserRepository extends AbstractRepository{
     `;
     let params = [street, houseNumber, longitude, latitude, zipID];
     return this.database.insertTuple(sql, params);
-}
+  }
 
- selectUsernameByStoreID(storeID){
+  selectUsernameByStoreID(storeID) {
     let sql = "SELECT username FROM STORE WHERE storeID = ?";
     let params = [storeID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectPasswordByUsername(username){
+  selectPasswordByUsername(username) {
     let sql = "SELECT password FROM LOGINCREDENTIALS WHERE username = ?";
     let params = [username];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectStoreByStoreID(storeID){
+  selectStoreByStoreID(storeID) {
     let sql = "SELECT * FROM STORE WHERE storeID = ?";
     let params = [storeID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectStoreID(storeName){
+  selectStoreID(storeName) {
     let sql = "SELECT storeID FROM STORE WHERE storeNAME = ?";
     let params = [storeName];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectAddressByAddressID(addressID){
+  selectAddressByAddressID(addressID) {
     let sql = "SELECT * FROM ADDRESS WHERE addressID = ?";
     let params = [addressID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectAddressIDByStoreID(storeID){
+  selectAddressIDByStoreID(storeID) {
     let sql = "SELECT addressID FROM STORE WHERE storeID = ?";
     let params = [storeID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectAddressID(street, houseNumber, zipID){
-    let sql =
-    `
+  selectAddressID(street, houseNumber, zipID) {
+    let sql = `
     SELECT
         ADDRESSID
     FROM
@@ -163,23 +177,33 @@ class UserRepository extends AbstractRepository{
     `;
     let params = [street, houseNumber, zipID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectZIPByZipID(zipID){
+  selectZIPByZipID(zipID) {
     let sql = "SELECT ZIP FROM ZIP WHERE zipID = ?";
     let params = [zipID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- async selectZipID(zip) {
+  selectZipID(zip) {
     let sql = "SELECT ZIPID FROM ZIP WHERE ZIP = ?";
     let params = [zip];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
+  selectLogoByStoreID(storeID) {
+    let sql = "SELECT logo FROM STORE WHERE storeID = ?";
+    let params = [storeID];
+    return this.database.queryOneDataSet(sql, params);
+    }
 
- updateStore(storeID, storeName, owner, telephone, email, zipID, addressID){
-    let sql = 
-    `
+    selectBackgroundImageByStoreID(storeID) {
+        let sql = "SELECT backgroundImage FROM STORE WHERE storeID = ?";
+        let params = [storeID];
+        return this.database.queryOneDataSet(sql, params);
+    }
+
+  updateStore(storeID, storeName, owner, telephone, email, zipID, addressID) {
+    let sql = `
     UPDATE
         STORE
     SET
@@ -192,13 +216,20 @@ class UserRepository extends AbstractRepository{
     WHERE
         storeID = ?;
     `;
-    let params = [storeName, owner, telephone, email, zipID, addressID, storeID];
+    let params = [
+      storeName,
+      owner,
+      telephone,
+      email,
+      zipID,
+      addressID,
+      storeID,
+    ];
     return this.database.updateTable(sql, params);
-}
+  }
 
- updateAddress(addressID, street, houseNumber, longitude, latitude, zipID){
-    let sql =
-    `
+  updateAddress(addressID, street, houseNumber, longitude, latitude, zipID) {
+    let sql = `
     UPDATE
         ADDRESS
     SET
@@ -212,13 +243,19 @@ class UserRepository extends AbstractRepository{
     `;
     let params = [street, houseNumber, longitude, latitude, zipID, addressID];
     return this.database.updateTable(sql, params);
-}
-
- updatePassword(username, password){
-    let sql = "UPDATE LOGINCREDENTIALS SET password = ? WHERE username = ?";
-    let params = [password, username];
+  }
+  
+  updateLoginCredentials(username, password) {
+    let sql = "UPDATE LOGINCREDENTIALS SET username = ? WHERE username = ?";
+    let params = [username, password];
     return this.database.updateTable(sql, params);
-}
+  }
+
+  updateParameter(parameter, value, storeID) {
+    let sql = `UPDATE STORE SET ${parameter} = ? WHERE storeID = ?`;
+    let params = [value, storeID];
+    return this.database.updateTable(sql, params);
+  }
 }
 
 module.exports = UserRepository;
