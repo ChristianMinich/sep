@@ -1,3 +1,4 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 class UserService {
@@ -65,7 +66,7 @@ async addLoginCredentials(username, password) {
 
 
   getData(token) {
-    return jwt.verify(token, "LingenLiefert"); // process.env.JWT_SECRET
+    return jwt.verify(token, process.env.JWT_SECRET); // process.env.JWT_SECRET
   }
 
   async getUsernameByStoreID(storeID) {
@@ -135,7 +136,7 @@ async generateJWT(user) {
 
           const token = jwt.sign(
               { storeID, storeName, owner, logo, telephone, email, username },
-              "LingenLiefert", // process.env.JWT_SECRET
+              process.env.JWT_SECRET, // process.env.JWT_SECRET
               {
                   algorithm: "HS256",
                   //expiresIn: "12h",
