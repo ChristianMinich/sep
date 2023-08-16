@@ -8,8 +8,7 @@
  * @typedef {AbstractController}
  */
 class AbstractController{
-    constructor(service){
-        this.service = service;
+    constructor(){
     }
 }
 
