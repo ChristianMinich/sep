@@ -3,7 +3,6 @@ class Settings{
     constructor(
         storeID,
         storeName,
-        password,
         owner,
         street,
         houseNumber,
@@ -13,7 +12,6 @@ class Settings{
     ){
         this.storeID = storeID !== null && storeID !== undefined ? storeID : this.throwError("storeID");
         this.storeName = storeName !== null && storeName !== undefined ? storeName : this.throwError("storeName");
-        this.password = password !== null && password !== undefined ? password : this.throwError("password");
         this.owner = owner !== null && owner !== undefined ? owner : this.throwError("owner");
         this.street = street !== null && street !== undefined ? street : this.throwError("street");
         this.houseNumber = houseNumber !== null && houseNumber !== undefined ? houseNumber : this.throwError("houseNumber");
@@ -54,14 +52,6 @@ class Settings{
 
     set storeName(storeName){
         this._storeName = storeName;
-    }
-
-    get password(){
-        return this._password;
-    }
-
-    set password(password){
-        this._password = password;
     }
 
     get owner(){
