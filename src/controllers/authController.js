@@ -1,6 +1,7 @@
 const AbstractController = require("./abstractController");
 const bcrypt = require("bcrypt");
-const store = require("../models/store");
+const Store = require("../models/store");
+const services = require("../services");
 /**
  * Controller for the authentication endpoints.
  * @date 8/12/2023 - 11:05:33 PM
@@ -9,10 +10,9 @@ const store = require("../models/store");
  * @typedef {AuthController}
  */
 class AuthController extends AbstractController{
-  constructor(service) {
-    super(service);
+  constructor() {
+    super();
   }
-  
   
   /**
    * Login function for the API to authenticate a user and return a JWT token.
@@ -26,7 +26,7 @@ class AuthController extends AbstractController{
   async login(req, res) {
     try {
       const { username, password } = req.body;
-      console.log("service" + this.service);
+      console.log("service");
   
       if (!username) {
         return res.status(400).json({ message: "Username not set" });
@@ -34,11 +34,11 @@ class AuthController extends AbstractController{
         return res.status(400).json({ message: "Password not set" });
       }
   
-      const isValidPassword = await this.userSvc.validatePassword(username, password);
+      const isValidPassword = await services.userService.validatePassword(username, password);
   
       if (isValidPassword) {
         try {
-          const token = await this.userSvc.generateJWT(username);
+          const token = await services.userService.generateJWT(username);
   
           if (token) {
             res.cookie("accessToken", token, { httpOnly: false });
@@ -90,7 +90,7 @@ class AuthController extends AbstractController{
         //!svc.doesStoreExist(req.body.STORE_NAME)
         console.log("Creating store...");
   
-        const newStore = new store(
+        const newStore = new Store(
           req.body.storeName,
           req.body.username,
           req.body.password,

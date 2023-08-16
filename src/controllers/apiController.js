@@ -1,4 +1,6 @@
 const AbstractController = require("./abstractController");
+const services = require("../services");
+const Order = require("../models/order");
 /**
  * Controller for the API routes.
  * @date 8/12/2023 - 11:05:08 PM
@@ -7,13 +9,13 @@ const AbstractController = require("./abstractController");
  * @typedef {ApiController}
  */
 class ApiController extends AbstractController{
-    constructor(service){
-        super(service);
+    constructor(){
+      super();
     }
 
   order(req, res) {
     try {
-      const decoded = svc.getData(req.body.token);
+      const decoded = services.userService.getData(req.body.token);
       try {
         const orderObject = new Order(
           decoded.storeID,
@@ -50,8 +52,8 @@ class ApiController extends AbstractController{
 
   allOrders(req, res) {
     try {
-      const decoded = svc.getData(req.body.token);
-      svc.orderSvc
+      const decoded = services.userService.getData(req.body.token);
+      services.orderService
         .getAllOrdersOfStore(decoded.storeID)
         .then((result) => {
           res.status(200).send(result);
@@ -66,8 +68,8 @@ class ApiController extends AbstractController{
 
   getSettings(req, res) {
     try {
-      const decoded = svc.getData(req.body.token);
-      settingsSVC
+      const decoded = services.userService.getData(req.body.token);
+      services.storeService
         .getSettings(decoded.storeID)
         .then((result) => {
           res.status(200).send(result);
@@ -82,7 +84,7 @@ class ApiController extends AbstractController{
 
   setSettings(req, res) {
     try {
-      const decoded = svc.getData(req.body.token);
+      const decoded = services.userService.getData(req.body.token);
       try {
         const settingsObject = new settings(
           decoded.storeID,
@@ -121,7 +123,7 @@ class ApiController extends AbstractController{
 
   storeDetails(req, res) {
     try {
-      svc
+      services.storeService
         .storeDetails()
         .then((details) => {
           if (details !== null) {
