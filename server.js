@@ -4,7 +4,8 @@ const http = require("http");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./src/routes");
-
+const Logger = require("./src/utils/logger");
+const logger = new Logger({ logLevel: "memory" });
 class ExpressServer {
     constructor() {
         this.app = express();
@@ -30,6 +31,7 @@ class ExpressServer {
     startServer() {
         this.httpServer.listen(this.port, () => {
             console.log(`Server started at Port ${this.port}`);
+            logger.info(`Server started at Port ${this.port}`);
         });
     }
 }
