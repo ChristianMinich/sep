@@ -79,7 +79,7 @@ class OrderService {
                 throw new Error("Order could not be added");
             }
 
-            const orderID = this.getOrderID(
+            const orderID = await this.getOrderID(
                 order.timestamp,
                 order.employeeName,
                 order.packageSize,
@@ -93,14 +93,14 @@ class OrderService {
                 throw new Error("OrderID could not be retrieved");
             }
 
-            const addedHandlingInfo = this.addHandlingInfo(orderID, order.handlingInfo);
+            const addedHandlingInfo = this.addHandlingInfo(orderID.orderID, order.handlingInfo);
 
             if (!addedHandlingInfo) {
                 throw new Error("HandlingInfo could not be added");
             }
 
             const addedRecipient = this.addRecipient(
-                orderID,
+                orderID.orderID,
                 order.firstName,
                 order.lastName,
                 addressID
@@ -146,7 +146,7 @@ class OrderService {
             const addedHandlingInfo = await this.database.insertHandlingInfo(orderID, handlingInfo);
 
             if (addedHandlingInfo) {
-                return "HandlingInfo successfully added";
+                return true;
             } else {
                 throw new Error("HandlingInfo could not be added");
             }
@@ -164,7 +164,7 @@ class OrderService {
             const addedRecipient = await this.database.insertRecipient(orderID, firstName, lastName, addressID);
 
             if (addedRecipient) {
-                return "Recipient successfully added";
+                return true;
             } else {
                 throw new Error("Recipient could not be added");
             }
