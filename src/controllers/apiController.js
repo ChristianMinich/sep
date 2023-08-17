@@ -1,6 +1,7 @@
 const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
+const Settings = require("../models/settings_new");
 /**
  * Controller for the API routes.
  * @date 8/12/2023 - 11:05:08 PM
@@ -88,18 +89,11 @@ class ApiController extends AbstractController{
       try {
         const settingsObject = new settings(
           decoded.storeID,
-          req.body.storeName,
-          req.body.password,
-          req.body.owner,
-          req.body.street,
-          req.body.houseNumber,
-          req.body.zip,
-          req.body.telephone,
-          req.body.email,
+          req.body.parameter,
+          req.body.value
         );
         try{
-        if (true) { //settingsObject.validateStore(settingsObject)
-          settingsObject.updateSettings().then((result) => {
+          settingsObject.updateParameter().then((result) => {
             if(result){
               res.status(200).send("Settings updated");
             }else{
@@ -108,7 +102,6 @@ class ApiController extends AbstractController{
           }).catch((error) => {
             res.status(403).send(error);
           });
-        }
         }catch(error){
           res.status(403).send(error);
         }
