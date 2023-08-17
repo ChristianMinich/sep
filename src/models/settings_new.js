@@ -36,3 +36,5 @@ class Settings{
         this._parameter = parameter;
     }
 }
+
+module.exports = Settings;
