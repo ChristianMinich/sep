@@ -2,8 +2,9 @@ const uuid = require("uuid");
 const fs = require("fs");
 const path = require("path");
 const storeDetailsObject = require("../utils/storeDetailsObject");
+const logger = require("../utils/logger");
 
-const UPLOAD_FOLDER = path.join(__dirname, "../public/Images/");
+const UPLOAD_FOLDER = path.join(__dirname, "../../public/Images/");
 
 class StoreService {
   constructor(database, addressService, userService) {
@@ -167,6 +168,7 @@ class StoreService {
 
           if (zip !== null && zip !== undefined) {
             const response = {
+              token: "",
               storeName: store.STORENAME,
               owner: store.OWNER,
               street: address.STREET,
@@ -244,14 +246,18 @@ class StoreService {
   }
 
   async updateParameters(settings) {
+    /*logger.info("storeID" + settings.storeID);
+    logger.info("parameter" + settings.parameter);
+    logger.info("value" + settings.value); */
     if(!settings){
+      logger.error("Missing parameters");
         throw new Error("Missing parameters");
     }
 
     switch (settings.parameter) {
         case "logo":
             try {
-                const logoImageBuffer = Buffer.from(store._logo, "base64");
+                const logoImageBuffer = Buffer.from(settings.value, "base64");
                 const logoImageFilename = uuid.v4();
                 const logoImageFilepath = path.join(
                   UPLOAD_FOLDER,
@@ -262,7 +268,7 @@ class StoreService {
                 if(oldLogoImageFilename !== null && oldLogoImageFilename !== undefined){
                     const oldLogoImageFilepath = path.join(
                         UPLOAD_FOLDER,
-                        oldLogoImageFilename + ".jpg");
+                        oldLogoImageFilename.logo + ".jpg");
                     fs.unlinkSync(oldLogoImageFilepath);
                 }
 
@@ -280,7 +286,7 @@ class StoreService {
         case "backgroundImage":
             try {
                 const backgroundImageBuffer = Buffer.from(
-                    store._backgroundImage,
+                  settings.value,
                     "base64"
                   );
                   const backgroundImageFilename = uuid.v4();
@@ -292,23 +298,27 @@ class StoreService {
                     backgroundImageFilepath,
                     backgroundImageBuffer
                   );
-
+                  logger.info("added background image " + backgroundImageFilename);
+                  
                   const oldBackgroundImageFilename = await this.database.selectBackgroundImageByStoreID(settings.storeID);
                   if(oldBackgroundImageFilename !== null && oldBackgroundImageFilename !== undefined){
                     const oldBackgroundImageFilepath = path.join(
                         UPLOAD_FOLDER,
-                        oldBackgroundImageFilename + ".jpg");
+                        oldBackgroundImageFilename.backgroundImage + ".jpg");
                     fs.unlinkSync(oldBackgroundImageFilepath);
-                }
+                } 
+                logger.info("deleted old background image " + oldBackgroundImageFilename.backgroundImage);
 
                 const result = await this.updatingParameters(settings.storeID, settings.parameter, backgroundImageFilename);
                 if(result){
+                    logger.info("Background image updated");
                     return true;
                 } else {
+                    logger.warn("Background image could not be updated");
                     return false;
                 }
             } catch (error) {
-                console.log(error);
+                logger.error(error);
                 return false;
             }
 
@@ -320,18 +330,20 @@ class StoreService {
                 if(result){
                     return true;
                 } else {
+                  logger.warn("Password could not be updated");
                     return false;
                 }
               } else {
+                logger.error("Username not found");
                   throw new Error("Username not found");
               }
              } catch (error) {
-              console.log(error);
+              logger.error(error);
               return false;
              }
         
         default:
-            return this.updatingParameters(settings.storeID, settings.parameter, settings.value);
+            return await this.updatingParameters(settings.storeID, settings.parameter, settings.value);
     }
 
   }
@@ -340,10 +352,10 @@ class StoreService {
     if (!storeID || !parameter || !value) {
         throw new Error("Missing parameters");
       }
-    const result = await this.database.updateParameters(
-        settings.storeID,
-        settings.parameter,
-        settings.value
+    const result = await this.database.updateParameter(
+        parameter,
+        value,
+        storeID
       );
   
       if (result) {
