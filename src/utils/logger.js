@@ -46,6 +46,5 @@ class Logger {
       return logLevels.indexOf(level) >= logLevels.indexOf(this.logLevel);
     }
   }
-  
-  module.exports = Logger;
+  module.exports = new Logger({ logLevel: "memory" });
   

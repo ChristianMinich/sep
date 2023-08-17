@@ -2,6 +2,7 @@ const AbstractController = require("./abstractController");
 const bcrypt = require("bcrypt");
 const Store = require("../models/store");
 const services = require("../services");
+const logger = require("../utils/logger");
 /**
  * Controller for the authentication endpoints.
  * @date 8/12/2023 - 11:05:33 PM
@@ -26,7 +27,6 @@ class AuthController extends AbstractController{
   async login(req, res) {
     try {
       const { username, password } = req.body;
-      console.log("service");
   
       if (!username) {
         return res.status(400).json({ message: "Username not set" });
@@ -41,20 +41,23 @@ class AuthController extends AbstractController{
           const token = await services.userService.generateJWT(username);
   
           if (token) {
+            logger.info(`Token generated for user ${username}`);
             res.cookie("accessToken", token, { httpOnly: false });
             return res.status(200).json({ token });
           } else {
+            logger.warn(`Error generating token for user ${username}`);
             return res.status(500).json({ message: "Error generating token" });
           }
         } catch (error) {
-          console.log(error);
+          logger.error(error);
           return res.status(500).json({ message: "Error generating token" });
         }
       } else {
+        logger.warn(`Invalid password for user ${username}`);
         return res.status(403).json({ message: "Invalid password" });
       }
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return res.status(500).json({ message: "An error occurred during login" });
     }
   }

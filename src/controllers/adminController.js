@@ -9,6 +9,9 @@ const path = require("path");
  * @typedef {AdminController}
  */
 class AdminController extends AbstractController{
+    constructor(){
+        super();
+    }
 
     index(req, res){
         res.status(200).sendFile(path.resolve("public/index.html"));

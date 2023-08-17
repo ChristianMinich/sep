@@ -2,6 +2,7 @@ const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
 const Settings = require("../models/settings_new");
+const logger = require("../utils/logger");
 /**
  * Controller for the API routes.
  * @date 8/12/2023 - 11:05:08 PM
@@ -87,7 +88,7 @@ class ApiController extends AbstractController{
     try {
       const decoded = services.userService.getData(req.body.token);
       try {
-        const settingsObject = new settings(
+        const settingsObject = new Settings(
           decoded.storeID,
           req.body.parameter,
           req.body.value
@@ -97,18 +98,23 @@ class ApiController extends AbstractController{
             if(result){
               res.status(200).send("Settings updated");
             }else{
+              logger.error("Error updating settings");
               res.status(403).send("Error updating settings");
             }
           }).catch((error) => {
+            logger.error(error);
             res.status(403).send(error);
           });
         }catch(error){
+          logger.error(error);
           res.status(403).send(error);
         }
       } catch (error) {
+        logger.error(error);
         res.status(403).send("Invalid settings object");
       }
     } catch (error) {
+      logger.error(error);
       res.status(403).send("Invalid token");
     }
     

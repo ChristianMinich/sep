@@ -4,8 +4,7 @@ const http = require("http");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const routes = require("./src/routes");
-const Logger = require("./src/utils/logger");
-const logger = new Logger({ logLevel: "memory" });
+const logger = require("./src/utils/logger");
 class ExpressServer {
     constructor() {
         this.app = express();
