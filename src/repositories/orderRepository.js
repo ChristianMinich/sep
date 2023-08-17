@@ -1,49 +1,56 @@
 const AbstractRepository = require("./abstractRepository");
-class OrderRepository extends AbstractRepository{
+class OrderRepository extends AbstractRepository {
   constructor(database) {
     super(database);
   }
 
-  cancelOrder(ORDER_ID){
+  cancelOrder(ORDER_ID) {
     let sql = "DELETE FROM DELIVERY_ORDER WHERE ORDER_ID = ?";
     let params = [ORDER_ID];
     return this.database.queryWithoutResponse(sql, params);
-}
+  }
 
-  allOrders(STORE_ID){
+  allOrders(STORE_ID) {
     let sql = "SELECT * FROM DELIVERY_ORDER WHERE STORE_ID = ?";
-    let params = [STORE_ID]
+    let params = [STORE_ID];
     return this.database.queryAllData(sql, params);
-}
+  }
 
- allOrdersByEmployee(EMPLOYEE_NAME){
+  allOrdersByEmployee(EMPLOYEE_NAME) {
     let sql = "SELECT * FROM DELIVERY_ORDER WHERE EMPLOYEE_NAME = ?";
     let params = [EMPLOYEE_NAME];
     return this.database.queryAllData(sql);
-}
+  }
 
-insertOrder(
-    timestamp, 
-    employeeName, 
-    packageSize, 
-    deliveryDate, 
-    customDropoffPlace, 
+  insertOrder(
+    timestamp,
+    employeeName,
+    packageSize,
+    deliveryDate,
+    customDropoffPlace,
     storeID,
-    addressID){
-    let sql = 
-    `
+    addressID
+  ) {
+    let sql = `
     INSERT INTO
         DELIVERY_ORDER (timestamp, employeeName, packageSize, deliveryDate, customDropoffPlace, storeID, addressID)
     VALUES
         (?, ?, ?, ?, ?, ?, ?);
     `;
-    let params = [timestamp, employeeName, packageSize, deliveryDate, customDropoffPlace, storeID, addressID];
+    let params = [
+      timestamp,
+      employeeName,
+      packageSize,
+      deliveryDate,
+      customDropoffPlace,
+      storeID,
+      addressID,
+    ];
     return this.database.insertTuple(sql, params);
-}
+  }
 
- insertHandlingInfo(orderID, handlingInfo){
-    let sql = 
-    `
+  insertHandlingInfo(orderID, handlingInfo) {
+    let sql = `
     INSERT INTO
         HANDLINGINFO (orderID, handlingInfo)
     VALUES
@@ -51,11 +58,10 @@ insertOrder(
     `;
     let params = [orderID, handlingInfo];
     return this.database.insertTuple(sql, params);
-}
+  }
 
- insertRecipient(orderID, firstName, lastName, addressID){
-    let sql = 
-    `
+  insertRecipient(orderID, firstName, lastName, addressID) {
+    let sql = `
     INSERT INTO
         RECIPIENT (orderID, firstName, lastName, addressID)
     VALUES
@@ -63,11 +69,18 @@ insertOrder(
     `;
     let params = [orderID, firstName, lastName, addressID];
     return this.database.insertTuple(sql, params);
-}
+  }
 
- selectOrderID(timestamp, employeeName, packageSize, deliveryDate, customDropoffPlace, storeID, addressID){
-    let sql = 
-    `
+  selectOrderID(
+    timestamp,
+    employeeName,
+    packageSize,
+    deliveryDate,
+    customDropoffPlace,
+    storeID,
+    addressID
+  ) {
+    let sql = `
     SELECT 
         orderID
     FROM 
@@ -87,13 +100,20 @@ insertOrder(
     AND 
         addressID = ?;
     `;
-    let params = [timestamp, employeeName, packageSize, deliveryDate, customDropoffPlace, storeID, addressID];
+    let params = [
+      timestamp,
+      employeeName,
+      packageSize,
+      deliveryDate,
+      customDropoffPlace,
+      storeID,
+      addressID,
+    ];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectAllOrdersOfStore(storeID){
-    let sql =
-    `
+  selectAllOrdersOfStore(storeID) {
+    let sql = `
     SELECT
         o.orderID,
         o.timestamp,
@@ -118,17 +138,16 @@ insertOrder(
     JOIN
         ZIP z ON a.zipID = z.zipID
     WHERE
-        storeID = ?;
+        storeID = ?
     ORDER BY
         o.orderID ASC;
     `;
     let params = [storeID];
     return this.database.queryAllData(sql, params);
-}
+  }
 
- selectHandlingInfo(orderID){
-    let sql = 
-    `
+  selectHandlingInfo(orderID) {
+    let sql = `
     SELECT
         *
     FROM 
@@ -138,11 +157,10 @@ insertOrder(
     `;
     let params = [orderID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- selectRecipient(orderID){
-    let sql = 
-    `
+  selectRecipient(orderID) {
+    let sql = `
     SELECT 
         *
     FROM
@@ -152,17 +170,16 @@ insertOrder(
     `;
     let params = [orderID];
     return this.database.queryOneDataSet(sql, params);
-}
+  }
 
- deleteOrder(orderID){
+  deleteOrder(orderID) {
     let sql = "DELETE FROM ORDER WHERE ORDER_ID = ?";
     let params = [orderID];
     return this.database.queryWithoutResponse(sql, params);
-}
+  }
 
- deleteHandlingInfo(orderID){
-    let sql = 
-    `
+  deleteHandlingInfo(orderID) {
+    let sql = `
     SELECT
         *
     FROM
@@ -172,14 +189,13 @@ insertOrder(
     `;
     let params = [orderID];
     return this.database.queryWithoutResponse(sql, params);
-}
+  }
 
- deleteRecipient(firstname, lastname){
+  deleteRecipient(firstname, lastname) {
     let sql = "DELETE FROM RECIPIENT WHERE firstname = ? AND lastname";
     let params = [firstname, lastname];
     return this.database.queryWithoutResponse(sql, params);
-}
-
+  }
 }
 
 module.exports = OrderRepository;
