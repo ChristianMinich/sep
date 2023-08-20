@@ -1,3 +1,4 @@
+require("dotenv").config();
 const uuid = require("uuid");
 const fs = require("fs");
 const path = require("path");
@@ -176,19 +177,38 @@ class StoreService {
               zip: String(zip.ZIP),
               telephone: store.TELEPHONE,
               email: store.EMAIL,
+              logo:
+                "http://" +
+                process.env.server_address +
+                ":" +
+                process.env.PORT +
+                process.env.image_folder +
+                store.LOGO +
+                ".jpg",
+              backgroundImage:
+                "http://" +
+                process.env.server_address +
+                ":" +
+                process.env.PORT +
+                process.env.image_folder +
+                store.BACKGROUNDIMAGE +
+                ".jpg",
             };
             return response;
           } else {
+            logger.error("Zip could not be found");
             throw new Error("Zip could not be found");
           }
         } else {
+          logger.error("Address could not be found");
           throw new Error("Address could not be found");
         }
       } else {
+        logger.error("Settings could not be found");
         throw new Error("Settings could not be found");
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       throw new Error("Error getting store settings");
     }
   }
@@ -249,121 +269,148 @@ class StoreService {
     /*logger.info("storeID" + settings.storeID);
     logger.info("parameter" + settings.parameter);
     logger.info("value" + settings.value); */
-    if(!settings){
+    if (!settings) {
       logger.error("Missing parameters");
-        throw new Error("Missing parameters");
+      throw new Error("Missing parameters");
     }
 
     switch (settings.parameter) {
-        case "logo":
-            try {
-                const logoImageBuffer = Buffer.from(settings.value, "base64");
-                const logoImageFilename = uuid.v4();
-                const logoImageFilepath = path.join(
-                  UPLOAD_FOLDER,
-                  logoImageFilename + ".jpg");
-                fs.writeFileSync(logoImageFilepath, logoImageBuffer);
+      case "logo":
+        try {
+          const logoImageBuffer = Buffer.from(settings.value, "base64");
+          const logoImageFilename = uuid.v4();
+          const logoImageFilepath = path.join(
+            UPLOAD_FOLDER,
+            logoImageFilename + ".jpg"
+          );
+          fs.writeFileSync(logoImageFilepath, logoImageBuffer);
 
-                const oldLogoImageFilename = await this.database.selectLogoByStoreID(settings.storeID);
-                if(oldLogoImageFilename !== null && oldLogoImageFilename !== undefined){
-                    const oldLogoImageFilepath = path.join(
-                        UPLOAD_FOLDER,
-                        oldLogoImageFilename.logo + ".jpg");
-                    fs.unlinkSync(oldLogoImageFilepath);
-                }
+          const oldLogoImageFilename = await this.database.selectLogoByStoreID(
+            settings.storeID
+          );
+          if (
+            oldLogoImageFilename !== null &&
+            oldLogoImageFilename !== undefined
+          ) {
+            const oldLogoImageFilepath = path.join(
+              UPLOAD_FOLDER,
+              oldLogoImageFilename.logo + ".jpg"
+            );
+            fs.unlinkSync(oldLogoImageFilepath);
+          }
 
-                const result = await this.updatingParameters(settings.storeID, settings.parameter, logoImageFilename);
-                if(result){
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (error) {
-                console.log(error);
-                return false;
-            }
+          const result = await this.updatingParameters(
+            settings.storeID,
+            settings.parameter,
+            logoImageFilename
+          );
+          if (result) {
+            return true;
+          } else {
+            return false;
+          }
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
 
-        case "backgroundImage":
-            try {
-                const backgroundImageBuffer = Buffer.from(
-                  settings.value,
-                    "base64"
-                  );
-                  const backgroundImageFilename = uuid.v4();
-                  const backgroundImageFilepath = path.join(
-                    UPLOAD_FOLDER,
-                    backgroundImageFilename + ".jpg"
-                  );
-                  fs.writeFileSync(
-                    backgroundImageFilepath,
-                    backgroundImageBuffer
-                  );
-                  logger.info("added background image " + backgroundImageFilename);
-                  
-                  const oldBackgroundImageFilename = await this.database.selectBackgroundImageByStoreID(settings.storeID);
-                  if(oldBackgroundImageFilename !== null && oldBackgroundImageFilename !== undefined){
-                    const oldBackgroundImageFilepath = path.join(
-                        UPLOAD_FOLDER,
-                        oldBackgroundImageFilename.backgroundImage + ".jpg");
-                    fs.unlinkSync(oldBackgroundImageFilepath);
-                } 
-                logger.info("deleted old background image " + oldBackgroundImageFilename.backgroundImage);
+      case "backgroundImage":
+        try {
+          const backgroundImageBuffer = Buffer.from(settings.value, "base64");
+          const backgroundImageFilename = uuid.v4();
+          const backgroundImageFilepath = path.join(
+            UPLOAD_FOLDER,
+            backgroundImageFilename + ".jpg"
+          );
+          fs.writeFileSync(backgroundImageFilepath, backgroundImageBuffer);
+          logger.info("added background image " + backgroundImageFilename);
 
-                const result = await this.updatingParameters(settings.storeID, settings.parameter, backgroundImageFilename);
-                if(result){
-                    logger.info("Background image updated");
-                    return true;
-                } else {
-                    logger.warn("Background image could not be updated");
-                    return false;
-                }
-            } catch (error) {
-                logger.error(error);
-                return false;
-            }
+          const oldBackgroundImageFilename =
+            await this.database.selectBackgroundImageByStoreID(
+              settings.storeID
+            );
+          if (
+            oldBackgroundImageFilename !== null &&
+            oldBackgroundImageFilename !== undefined
+          ) {
+            const oldBackgroundImageFilepath = path.join(
+              UPLOAD_FOLDER,
+              oldBackgroundImageFilename.backgroundImage + ".jpg"
+            );
+            fs.unlinkSync(oldBackgroundImageFilepath);
+          }
+          logger.info(
+            "deleted old background image " +
+              oldBackgroundImageFilename.backgroundImage
+          );
 
-        case "password":
-             try {
-              const username = await this.database.selectUsernameByStoreID(settings.storeID);
-              if(username !== null && username !== undefined){
-                const result = await this.userService.updateLoginCredentials(username, settings.value);
-                if(result){
-                    return true;
-                } else {
-                  logger.warn("Password could not be updated");
-                    return false;
-                }
-              } else {
-                logger.error("Username not found");
-                  throw new Error("Username not found");
-              }
-             } catch (error) {
-              logger.error(error);
+          const result = await this.updatingParameters(
+            settings.storeID,
+            settings.parameter,
+            backgroundImageFilename
+          );
+          if (result) {
+            logger.info("Background image updated");
+            return true;
+          } else {
+            logger.warn("Background image could not be updated");
+            return false;
+          }
+        } catch (error) {
+          logger.error(error);
+          return false;
+        }
+
+      case "password":
+        try {
+          const username = await this.database.selectUsernameByStoreID(
+            settings.storeID
+          );
+          if (username !== null && username !== undefined) {
+            const result = await this.userService.updateLoginCredentials(
+              username,
+              settings.value
+            );
+            if (result) {
+              return true;
+            } else {
+              logger.warn("Password could not be updated");
               return false;
-             }
-        
-        default:
-            return await this.updatingParameters(settings.storeID, settings.parameter, settings.value);
-    }
+            }
+          } else {
+            logger.error("Username not found");
+            throw new Error("Username not found");
+          }
+        } catch (error) {
+          logger.error(error);
+          return false;
+        }
 
+      default:
+        return await this.updatingParameters(
+          settings.storeID,
+          settings.parameter,
+          settings.value
+        );
+    }
   }
 
   async updatingParameters(storeID, parameter, value) {
     if (!storeID || !parameter || !value) {
-        throw new Error("Missing parameters");
-      }
-    const result = await this.database.updateParameter(
-        parameter,
-        value,
-        storeID
-      );
-  
-      if (result) {
-        return true;
-      } else {
-        return false;
-      }
+      throw new Error("Missing parameters");
     }
+    const result = await this.database.updateParameter(
+      parameter,
+      value,
+      storeID
+    );
+
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 module.exports = StoreService;
