@@ -59,7 +59,7 @@ class StoreService {
       if (!storeExists) {
         const storeZipID = await this.addressService.getZipID(store._zip);
         if (storeZipID !== null && storeZipID !== undefined) {
-          const addedAddress = await this.addressService.addAddress(
+          const addedAddress = await this.addressService.newAddAddress(
             store._street,
             store._houseNumber,
             store._zip,
@@ -172,9 +172,11 @@ class StoreService {
               token: "",
               storeName: store.STORENAME,
               owner: store.OWNER,
-              street: address.STREET,
-              houseNumber: address.HOUSENUMBER,
-              zip: String(zip.ZIP),
+              address: {
+                street: address.STREET,
+                houseNumber: address.HOUSENUMBER,
+                zip: String(zip.ZIP),
+              },
               telephone: store.TELEPHONE,
               email: store.EMAIL,
               logo:

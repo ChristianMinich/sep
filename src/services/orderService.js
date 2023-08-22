@@ -34,11 +34,12 @@ class OrderService {
                 console.log("addressID: " + addressID + " ADRESS DOES NOT EXIST");
                 if (order.houseNumber.length <= 5) {
                     console.log("adding Address");
-                    const addedAddress = await this.addressService.addAddress(
+                    const addedAddress = await this.addressService.newAddAddress(
                         order.street,
                         order.houseNumber,
                         order.zip,
-                        zipID
+                        zipID,
+                        true
                     );
                     if (!addedAddress) {
                         throw new Error("Address could not be added");

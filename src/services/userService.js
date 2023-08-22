@@ -49,13 +49,37 @@ class UserService {
   }
 
   async addLoginCredentials(username, password) {
+    return new Promise((resolve, reject) => {
+      bcrypt.hash(password, 10, async (err, hash) => {
+        if (err) {
+          console.error(err);
+          reject(new Error("Error hashing password"));
+        } else {
+          console.log("hash: " + hash);
+          try {
+            const result = await this.database.insertLoginCredentials(
+              username,
+              hash
+            );
+            console.log(result);
+            resolve(result === true);
+          } catch (error) {
+            console.error(error);
+            reject(new Error("Error adding login credentials"));
+          }
+        }
+      });
+    });
+  }
+
+  async updateLoginCredentials(username, password) {
     try {
       bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
           console.error(err);
           throw new Error("Error hashing password");
         } else {
-          const result = await this.database.insertLoginCredentials(
+          const result = await this.database.updateLoginCredentials(
             username,
             hash
           );
@@ -71,31 +95,6 @@ class UserService {
       console.error(error);
       throw new Error("Error adding login credentials");
     }
-  }
-
-  async updateLoginCredentials(username, password) {
-    try {
-        bcrypt.hash(password, 10, async (err, hash) => {
-          if (err) {
-            console.error(err);
-            throw new Error("Error hashing password");
-          } else {
-            const result = await this.database.updateLoginCredentials(
-              username,
-              hash
-            );
-  
-            if (result) {
-              return true;
-            } else {
-              return false;
-            }
-          }
-        });
-      } catch (error) {
-        console.error(error);
-        throw new Error("Error adding login credentials");
-      }
   }
 
   getData(token) {
