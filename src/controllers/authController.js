@@ -10,11 +10,11 @@ const logger = require("../utils/logger");
  * @class AuthController
  * @typedef {AuthController}
  */
-class AuthController extends AbstractController{
+class AuthController extends AbstractController {
   constructor() {
     super();
   }
-  
+
   /**
    * Login function for the API to authenticate a user and return a JWT token.
    * @date 8/12/2023 - 11:01:03 PM
@@ -27,19 +27,22 @@ class AuthController extends AbstractController{
   async login(req, res) {
     try {
       const { username, password } = req.body;
-  
+
       if (!username) {
         return res.status(400).json({ message: "Username not set" });
       } else if (!password) {
         return res.status(400).json({ message: "Password not set" });
       }
-  
-      const isValidPassword = await services.userService.validatePassword(username, password);
-  
+
+      const isValidPassword = await services.userService.validatePassword(
+        username,
+        password
+      );
+
       if (isValidPassword) {
         try {
           const token = await services.userService.generateJWT(username);
-  
+
           if (token) {
             logger.info(`Token generated for user ${username}`);
             res.cookie("accessToken", token, { httpOnly: false });
@@ -58,12 +61,12 @@ class AuthController extends AbstractController{
       }
     } catch (error) {
       logger.error(error);
-      return res.status(500).json({ message: "An error occurred during login" });
+      return res
+        .status(500)
+        .json({ message: "An error occurred during login" });
     }
   }
-  
 
-  
   /**
    * Register function for the API to register a new user.
    * @date 8/12/2023 - 11:02:51 PM
@@ -87,12 +90,12 @@ class AuthController extends AbstractController{
             }
           });
         });
-  
+
         req.body.password = hashedPassword;
-  
+
         //!svc.doesStoreExist(req.body.STORE_NAME)
         console.log("Creating store...");
-  
+
         const newStore = new Store(
           req.body.storeName,
           req.body.username,
@@ -106,15 +109,15 @@ class AuthController extends AbstractController{
           req.body.logo,
           req.body.backgroundImage
         );
-  
+
         console.log(newStore);
-  
+
         if (newStore.validateStore(newStore)) {
           try {
             const response = await newStore.createStore();
-  
+
             console.log(response);
-  
+
             if (response === "Store added") {
               res.status(200).send("Store added");
             } else {
@@ -138,7 +141,35 @@ class AuthController extends AbstractController{
       res.status(500).send("An error occurred during registration");
     }
   }
-  
+
+  async updatePassword(req, res) {
+    console.log(req.body);
+    try {
+      const decoded = services.userService.getData(req.body.token);
+      console.log(decoded);
+      try {
+        services.userService
+          .updatePassword(decoded.username, req.body.oldPassword, req.body.newPassword)
+          .then((result) => {
+            if (result) {
+              res.status(200).send("Password updated");
+            } else {
+              logger.error("Error updating password");
+              res.status(403).send("Error updating password");
+            }
+          })
+          .catch((error) => {
+            logger.error(error);
+            res.status(403).send("Wrong password");
+          });
+      } catch (error) {
+        logger.error(error);
+        res.status(403).send("Invalid password object");
+      }
+    } catch (error) {
+      res.status(403).send("Invalid token");
+    }
+  }
 }
 
 module.exports = AuthController;

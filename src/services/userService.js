@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const logger = require("../utils/logger");
 class UserService {
   constructor(database) {
     this.database = database;
@@ -74,28 +75,30 @@ class UserService {
 
   async updateLoginCredentials(username, password) {
     try {
-      bcrypt.hash(password, 10, async (err, hash) => {
-        if (err) {
-          console.error(err);
-          throw new Error("Error hashing password");
-        } else {
-          const result = await this.database.updateLoginCredentials(
-            username,
-            hash
-          );
-
-          if (result) {
-            return true;
+      const hash = await new Promise((resolve, reject) => {
+        bcrypt.hash(password, 10, (err, hash) => {
+          if (err) {
+            console.error(err);
+            reject(new Error("Error hashing password"));
           } else {
-            return false;
+            resolve(hash);
           }
-        }
+        });
       });
+  
+      const updateResult = await this.database.updateLoginCredentials(
+        username,
+        hash
+      );
+  
+      return updateResult;
     } catch (error) {
       console.error(error);
-      throw new Error("Error adding login credentials");
+      throw new Error("Error updating login credentials");
     }
   }
+  
+  
 
   getData(token) {
     return jwt.verify(token, process.env.JWT_SECRET); // process.env.JWT_SECRET
@@ -131,20 +134,54 @@ class UserService {
     }
   }
 
-  async updatePassword(username, password) {
+  async updatePassword(username, oldPassword, newPassword) {
     try {
-      const result = await this.database.updatePassword(username, password);
-
-      if (result !== null && result !== undefined) {
-        return true;
+      const result = await this.getPasswordbyUsername(username);
+      logger.info("result: " + result);
+      if (result !== null) {
+        const passwordMatch = await new Promise((resolve) => {
+          bcrypt.compare(oldPassword, result, (err, res) => {
+            if (err) {
+              logger.warn("Error comparing passwords");
+              resolve(false);
+            } else {
+              resolve(res);
+            }
+          });
+        });
+        logger.info("passwordMatch: " + passwordMatch);
+        if (passwordMatch) {
+          try {
+            const updatedCredentials = await this.updateLoginCredentials(
+              username,
+              newPassword
+            );
+            logger.info("updatedCredentials: " + updatedCredentials);
+            if(updatedCredentials){
+              logger.info("Password updated");
+              return true;
+            }else{
+              logger.warn("Couldn't update password");
+              return false;
+            }
+          } catch (error) {
+            logger.error(error);
+            return false;
+          }
+        } else {
+          logger.warn("Passwords do not match");
+          return false; // Passwords do not match
+        }
       } else {
-        return false;
+        logger.warn("User not found");
+        return false; // User not found
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       return false;
     }
   }
+  
 
   async generateJWT(user) {
     try {
@@ -152,14 +189,15 @@ class UserService {
       console.log(result);
 
       if (result !== null && result !== undefined) {
-        console.log("inside genJWT" + result[0]);
+        console.log("inside genJWT" + result);
+        console.log("username " + result.username);
         const storeID = result.storeID;
         const storeName = result.storeName;
         const owner = result.owner;
         const logo = result.logo;
         const telephone = result.telephone;
         const email = result.email;
-        const username = result.username;
+        const username = user;
 
         console.log(
           storeID +

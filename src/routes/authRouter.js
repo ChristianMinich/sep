@@ -10,6 +10,7 @@ class AuthRouter extends AbstractRouter{
     initializeRoutes(){
         this.router.post("/login", controller.AuthController.login);
         this.router.post("/register", controller.AuthController.register);
+        this.router.post("/updatePassword", controller.AuthController.updatePassword);
     }
 }
 
