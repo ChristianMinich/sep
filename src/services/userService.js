@@ -91,7 +91,11 @@ class UserService {
         hash
       );
   
-      return updateResult;
+      if(updateResult){
+        return true;
+      }else{
+        return false;
+      }
     } catch (error) {
       console.error(error);
       throw new Error("Error updating login credentials");

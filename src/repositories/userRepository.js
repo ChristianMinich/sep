@@ -30,7 +30,7 @@ class UserRepository extends AbstractRepository {
         owner,
         logo,
         telephone,
-        email,
+        email
     FROM
         STORE
     WHERE
@@ -245,9 +245,16 @@ class UserRepository extends AbstractRepository {
     return this.database.updateTable(sql, params);
   }
   
+  /**
+   * Updates the login credentials of a store
+   * sets the new password for the given username
+   * @param {*} username 
+   * @param {*} password 
+   * @returns Boolean
+   */
   updateLoginCredentials(username, password) {
     let sql = "UPDATE LOGINCREDENTIALS SET password = ? WHERE username = ?";
-    let params = [username, password];
+    let params = [password, username];
     return this.database.updateTable(sql, params);
   }
 
