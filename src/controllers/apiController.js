@@ -2,6 +2,7 @@ const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
 const Settings = require("../models/settings_new");
+const Address = require("../models/address");
 const logger = require("../utils/logger");
 /**
  * Controller for the API routes.
@@ -118,6 +119,41 @@ class ApiController extends AbstractController{
       res.status(403).send("Invalid token");
     }
     
+  }
+
+  setAddress(req, res) {
+    try {
+      const decoded = services.userService.getData(req.body.token);
+      try {
+        const addressObject = new Address(
+          decoded.storeID,
+          req.body.address.street,
+          req.body.address.houseNumber,
+          req.body.address.zip
+        );
+        try {
+          addressObject.updateAddress().then((result) => {
+            logger.info("result" + result);
+            if(result){
+              res.status(200).send("Address updated");
+            }else{
+              logger.error("Error updating address");
+              res.status(403).send("Error updating address");
+            }
+          }).catch((error) => {
+            logger.error(error);
+          });
+        } catch (error) {
+          logger.error(error);
+        }
+      } catch (error) {
+        logger.error(error);
+        res.status(403).send("Invalid address object");
+      }
+    } catch (error) {
+      logger.error(error);
+      res.status(403).send("Invalid token");
+    }
   }
 
   storeDetails(req, res) {
