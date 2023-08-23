@@ -58,7 +58,7 @@ class Order {
     this.customDropOffPlace = customDropOffPlace;
       customDropOffPlace !== null && customDropOffPlace !== undefined
         ? customDropOffPlace
-        : "";
+        : " ";
   }
 
   throwError(property) {
