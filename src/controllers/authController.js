@@ -79,6 +79,7 @@ class AuthController extends AbstractController {
   async register(req, res) {
     try {
       //if (svc.validateRegisterCode(req.body.code)) {
+      /*
       console.log(req.body);
       if (true) {
         const hashedPassword = await new Promise((resolve, reject) => {
@@ -89,49 +90,46 @@ class AuthController extends AbstractController {
               resolve(hash);
             }
           });
-        });
+        }); */
 
-        req.body.password = hashedPassword;
+      //req.body.password = hashedPassword;
 
-        //!svc.doesStoreExist(req.body.STORE_NAME)
-        console.log("Creating store...");
+      //!svc.doesStoreExist(req.body.STORE_NAME)
+      console.log("Creating store...");
 
-        const newStore = new Store(
-          req.body.storeName,
-          req.body.username,
-          req.body.password,
-          req.body.owner,
-          req.body.street,
-          req.body.houseNumber,
-          req.body.zip,
-          req.body.telephone,
-          req.body.email,
-          req.body.logo,
-          req.body.backgroundImage
-        );
+      const newStore = new Store(
+        req.body.storeName,
+        req.body.username,
+        req.body.password,
+        req.body.owner,
+        req.body.street,
+        req.body.houseNumber,
+        req.body.zip,
+        req.body.telephone,
+        req.body.email,
+        req.body.logo,
+        req.body.backgroundImage
+      );
 
-        console.log(newStore);
+      console.log(newStore);
 
-        if (newStore.validateStore(newStore)) {
-          try {
-            const response = await newStore.createStore();
+      if (newStore.validateStore(newStore)) {
+        try {
+          const response = await newStore.createStore();
 
-            console.log(response);
+          console.log(response);
 
-            if (response === "Store added") {
-              res.status(200).send("Store added");
-            } else {
-              res.status(403).send(response);
-            }
-          } catch (err) {
-            console.log(err);
-            res.status(500).send("Error creating store!");
+          if (response === "Store added") {
+            res.status(200).send("Store added");
+          } else {
+            res.status(403).send(response);
           }
-        } else {
-          res.status(403).send("Invalid store!");
+        } catch (err) {
+          console.log(err);
+          res.status(500).send("Error creating store!");
         }
       } else {
-        res.status(403).send("Store already exists!");
+        res.status(403).send("Invalid store!");
       }
       /*} else {
         res.status(403).send("Invalid register code!");
@@ -149,7 +147,11 @@ class AuthController extends AbstractController {
       console.log(decoded);
       try {
         services.userService
-          .updatePassword(decoded.username, req.body.oldPassword, req.body.newPassword)
+          .updatePassword(
+            decoded.username,
+            req.body.oldPassword,
+            req.body.newPassword
+          )
           .then((result) => {
             if (result) {
               res.status(200).send("Password updated");
