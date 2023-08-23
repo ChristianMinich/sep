@@ -34,7 +34,6 @@ class ApiController extends AbstractController{
           req.body.deliveryDate,
           req.body.customDropOffPlace
         );
-        if (orderObject.validateOrder(orderObject)) {
           orderObject
             .placeOrder()
             .then((result) => {
@@ -43,7 +42,6 @@ class ApiController extends AbstractController{
             .catch((error) => {
               res.status(403).send(error);
             });
-        }
       } catch (error) {
         console.log(error);
         res.status(403).send("Invalid order object");
@@ -86,6 +84,10 @@ class ApiController extends AbstractController{
   }
 
   setSettings(req, res) {
+    logger.info(req.body);
+    logger.info(req.body.token);
+    logger.info(req.body.parameter);
+    logger.info(req.body.value);
     try {
       const decoded = services.userService.getData(req.body.token);
       try {
