@@ -8,7 +8,8 @@ class AddressService {
 
   async newAddAddress(street, houseNumber, zip, zipID, recipient = false) {
     if (!street || !houseNumber || !zip) {
-      throw new Error("Missing required parameters");
+      logger.error("Missing required parameters");
+      return false;
     }
 
     const doesAddressExist = await this.database.selectAddressID(
@@ -33,7 +34,8 @@ class AddressService {
             if (addedAddress) {
               return true;
             } else {
-              throw new Error("Address could not be added");
+              logger.error("Address could not be added");
+              return false;
             }
           } catch (error) {
             console.error(error);
@@ -51,10 +53,11 @@ class AddressService {
           if (addedAddress) {
             return true;
           } else {
-            throw new Error("Address could not be added");
+            logger.error("Address could not be added");
+            return false;
           }
         } catch (error) {
-          console.error(error);
+          logger.error(error);
         }
       }
     } else {
@@ -64,7 +67,8 @@ class AddressService {
 
   async addAddress(street, houseNumber, zip, zipID) {
     if (!street || !houseNumber || !zipID) {
-      throw new Error("Missing required parameters");
+      logger.error("Missing required parameters");
+      return false;
     }
 
     try {
@@ -79,7 +83,8 @@ class AddressService {
       );
 
       if (!coordinates || !coordinates[0]) {
-        throw new Error("Coordinates could not be retrieved");
+        logger.error("Coordinates could not be retrieved");
+        return false;
       }
 
       try {
@@ -94,15 +99,16 @@ class AddressService {
         if (addedAddress) {
           return true;
         } else {
-          throw new Error("Address could not be added");
+          logger.error("Address could not be added");
+          return false;
         }
       } catch (error) {
-        console.error(error);
-        throw new Error("Error adding address");
+        logger.error(error);
+        return false;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error retrieving coordinates");
+      logger.error(error);
+      return false;
     }
   }
 
@@ -123,14 +129,15 @@ class AddressService {
         return null;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error retrieving AddressID");
+      logger.error(error);
+      return null;
     }
   }
 
   async newUpdateAddress(address) {
     if (!address) {
-      throw new Error("Missing required parameters");
+      logger.error("Missing required parameters");
+      return false;
     }
 
     logger.info(
@@ -176,25 +183,32 @@ class AddressService {
                   logger.info("Address updated");
                   return true;
                 } else {
-                  throw new Error("Address could not be updated");
+                  logger.error("Address could not be updated");
+                  return false;
                 }
               } else {
-                throw new Error("Coordinates could not be retrieved");
+                logger.error("Coordinates could not be retrieved");
+                return false;
               }
             } catch (error) {
               logger.error(error);
+              return false;
             }
           } else {
-            throw new Error("ZIPID could not be retrieved");
+            logger.error("ZIPID could not be retrieved");
+            return false;
           }
         } catch (error) {
           logger.error(error + "ZIPID PROBLEM");
+          return false;
         }
       } else {
-        throw new Error("AddressID could not be retrieved");
+        logger.error("AddressID could not be retrieved");
+        return false;
       }
     } catch (error) {
       logger.error(error);
+      return false;
     }
   }
 
@@ -210,7 +224,8 @@ class AddressService {
       );
 
       if (!coordinates || !coordinates[0]) {
-        throw new Error("Coordinates could not be found");
+        logger.error("Coordinates could not be retrieved");
+        return false;
       }
 
       try {
@@ -226,15 +241,16 @@ class AddressService {
         if (result) {
           return result;
         } else {
-          throw new Error("Address could not be updated");
+          logger.error("Address could not be updated");
+          return false;
         }
       } catch (error) {
-        console.error(error);
-        throw new Error("Error updating address");
+        logger.error(error);
+        return false;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error retrieving coordinates");
+      logger.error(error);
+      return false;
     }
   }
 
@@ -248,8 +264,8 @@ class AddressService {
         return null;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error retrieving AddressID by StoreID");
+      logger.error(error);
+      return null;
     }
   }
 
@@ -264,8 +280,8 @@ class AddressService {
         return null;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error retrieving ZIPID");
+      logger.error(error);
+      return null;
     }
   }
 }

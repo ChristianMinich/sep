@@ -49,7 +49,7 @@ class StoreService {
 
   async addStore(store) {
     if (!store) {
-      throw new Error("Missing parameters");
+      logger.error("Store is null or undefined");
     }
 
     try {
@@ -120,28 +120,50 @@ class StoreService {
                 );
 
                 if (addedStore) {
-                  return "Store added";
+                  return {
+                    response: "Store added",
+                  }
                 } else {
-                  throw new Error("Store not added");
+                  logger.error("Store not added");
+                  return {
+                    response: "Store not added",
+                  }
                 }
               } else {
-                throw new Error("Login credentials not added");
+                logger.error("Login credentials not added");
+                return {
+                  response: "Login credentials not added",
+                }
               }
             } else {
-              throw new Error("AddressID not found");
+              logger.error("AddressID not found");
+              return {
+                response: "AddressID not found",
+              };
             }
           } else {
-            throw new Error("Address not added");
+            logger.error("Address not added");
+            return {
+              response: "Address not added",
+            };
           }
         } else {
-          throw new Error("ZipID not found");
+          logger.error("ZipID not found");
+          return {
+            response: "ZipID not found",
+          };
         }
       } else {
-        throw new Error("Store already exists");
+        logger.error("Store already exists");
+        return {
+          response: "Store already exists",
+        };
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error adding store");
+      logger.error(error);
+      return {
+        response: "Error adding store",
+      };
     }
   }
 
@@ -150,8 +172,8 @@ class StoreService {
       const exists = await this.database.getExistingStore(storeName);
       return exists;
     } catch (error) {
-      console.error(error);
-      throw new Error("Error checking if store exists");
+      logger.error(error);
+      return false;
     }
   }
 
@@ -199,19 +221,19 @@ class StoreService {
             return response;
           } else {
             logger.error("Zip could not be found");
-            throw new Error("Zip could not be found");
+            return null;
           }
         } else {
           logger.error("Address could not be found");
-          throw new Error("Address could not be found");
+          return null;
         }
       } else {
         logger.error("Settings could not be found");
-        throw new Error("Settings could not be found");
+        return null;
       }
     } catch (error) {
       logger.error(error);
-      throw new Error("Error getting store settings");
+      return null;
     }
   }
 
@@ -250,20 +272,24 @@ class StoreService {
             if (updatedStore) {
               return true;
             } else {
-              throw new Error("Store update failed");
+              logger.error("Store could not be updated");
+              return false;
             }
           } else {
-            throw new Error("Address could not be updated");
+            logger.error("Address could not be updated");
+            return false;
           }
         } else {
-          throw new Error("Address not found");
+          logger.error("AddressID could not be found");
+          return false;
         }
       } else {
-        throw new Error("ZIP code not found");
+        logger.error("ZipID could not be found");
+        return false;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error updating settings");
+      logger.error(error);
+      return false;
     }
   }
 
@@ -274,7 +300,7 @@ class StoreService {
     const parameters = ["storeName", "owner", "telephone", "email"];
     if (!settings) {
       logger.error("Missing parameters");
-      throw new Error("Missing parameters");
+      return false;
     }
 
     if (parameters.includes(settings.parameter)) {
@@ -319,7 +345,7 @@ class StoreService {
               return false;
             }
           } catch (error) {
-            console.log(error);
+            logger.error(error);
             return false;
           }
 
@@ -388,7 +414,7 @@ class StoreService {
               }
             } else {
               logger.error("Username not found");
-              throw new Error("Username not found");
+              return false;
             }
           } catch (error) {
             logger.error(error);
@@ -403,7 +429,8 @@ class StoreService {
 
   async updatingParameters(storeID, parameter, value) {
     if (!storeID || !parameter || !value) {
-      throw new Error("Missing parameters");
+      logger.error("Missing parameters");
+      return false;
     }
     const result = await this.database.updateParameter(
       parameter,

@@ -23,7 +23,7 @@ class UserService {
         return false;
       } else {
         const result = await this.database.getPasswordByName(username);
-        console.log(result);
+        logger.info("result: " + result.password);
 
         if (!result) {
           console.log("no result");
@@ -31,7 +31,7 @@ class UserService {
         } else {
           if (result !== null && result !== undefined) {
             console.log("tried to compare!");
-            const valid = await bcrypt.compare(password, result.password);
+            const valid = await bcrypt.compare(password, result.password); // remove .password
             console.log(password + " " + result.password + " " + valid);
 
             if (valid) {
@@ -44,12 +44,13 @@ class UserService {
         }
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error validating password");
+      logger.error(error);
+      return false;
     }
   }
 
   async addLoginCredentials(username, password) {
+    logger.info(password);
     return new Promise((resolve, reject) => {
       bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
@@ -97,8 +98,8 @@ class UserService {
         return false;
       }
     } catch (error) {
-      console.error(error);
-      throw new Error("Error updating login credentials");
+      logger.error(error);
+      return false;
     }
   }
   
