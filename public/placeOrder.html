@@ -8,6 +8,9 @@
         <h2>Place Order</h2>
         <form method="post" action="/api/order">
 
+        <label for="token">token:</label>
+        <input type="text" name="token" id="token" required><br>
+
         <label for="timestamp">timestamp:</label>
         <input type="text" name="timestamp" id="timestamp" required><br>
 
@@ -37,6 +40,9 @@
 
         <label for="deliveryDate">deliveryDate:</label>
         <input type="date" name="deliveryDate" id="deliveryDate" required><br>
+
+        <label for="customDropOffPlace">customDropOffPlace:</label>
+        <input type="text" name="customDropOffPlace" id="customDropOffPlace"><br>
 
         <input type="submit" value="Submit">
     </form>
