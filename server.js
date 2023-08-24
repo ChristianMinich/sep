@@ -21,6 +21,11 @@ class ExpressServer {
         this.app.use(express.static("public", { extensions: ["html"] }));
         this.app.use(cookieParser());
         this.app.use(bodyParser.json({ limit: '500mb' }));
+
+        this.app.use((req, res, next) => {
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            next();
+        });
     }
 
     configureRoutes() {
