@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h2>Set Settings</h2>
+        <form method="post" action="/api/setAddress">
+
+        <label for="token">token:</label>
+        <input type="text" name="token" id="token" required><br>
+
+        <label for="street">street:</label>
+        <input type="text" name="address[street]" id="street" required><br>
+
+        <label for="houseNumber">houseNumber:</label>
+        <input type="text" name="address[houseNumber]" id="houseNumber" required><br>
+
+        <label for="zip">zip:</label>
+        <select id="zip" name="address[zip]">
+            <option value="49808">49808</option>
+            <option value="49809">49809</option>
+            <option value="49011">49811</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+</body>
+</html>
