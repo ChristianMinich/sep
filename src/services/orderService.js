@@ -1,4 +1,6 @@
 const logger = require("../utils/logger");
+const EmailSender = require("./mailService");
+const emailSender = new EmailSender();
 class OrderService {
     constructor(database, addressService) {
         this.database = database;
@@ -12,11 +14,9 @@ class OrderService {
                 !order.street ||
                 !order.houseNumber ||
                 !order.timestamp ||
-                !order.employeeName ||
                 !order.packageSize ||
                 !order.deliveryDate ||
                 !order.storeID ||
-                !order.handlingInfo ||
                 !order.firstName ||
                 !order.lastName
             ) {
@@ -90,7 +90,7 @@ class OrderService {
         try {
             const addedOrder = await this.database.insertOrder(
                 order.timestamp,
-                order.employeeName,
+                order.employeeName ? order.employeeName : " ",
                 order.packageSize,
                 order.deliveryDate,
                 order.customDropOffPlace ? order.customDropOffPlace : " ",
@@ -99,6 +99,7 @@ class OrderService {
             );
     
             if (!addedOrder) {
+                logger.error("<-- Order process failed! -->");
                 logger.error("Order could not be added");
                 return {
                     response: "Order could not be added",
@@ -107,7 +108,7 @@ class OrderService {
     
             const orderID = await this.getOrderID(
                 order.timestamp,
-                order.employeeName,
+                order.employeeName ? order.employeeName : " ",
                 order.packageSize,
                 order.deliveryDate,
                 order.customDropOffPlace ? order.customDropOffPlace : " ",
@@ -122,10 +123,27 @@ class OrderService {
                 };
             }
     
-            const addedHandlingInfo = this.addHandlingInfo(orderID.orderID, order.handlingInfo);
+            const addedHandlingInfo = this.addHandlingInfo(orderID.orderID, order.handlingInfo ? order.handlingInfo : " ");
     
             if (!addedHandlingInfo) {
-                // TODO: delete order
+                try {
+                    logger.error("<-- Order process failed! -->");
+                    // TODO: delete order
+                    const removedOrder = await this.removeOrder(orderID.orderID);
+                    if (removedOrder) {
+                        logger.info("Order removed");
+                        return {
+                            response: "Order process failed!",
+                        };
+                    } else {
+                        logger.error("Order could not be removed");
+                        return {
+                            response: "Order could not be removed",
+                        };
+                    }
+                } catch (error) {
+                    
+                }
                 logger.error("HandlingInfo could not be added");
                 return {
                     response: "HandlingInfo could not be added",
@@ -140,17 +158,74 @@ class OrderService {
             );
     
             if (!addedRecipient) {
-                //TODO: delete order and handlingInfo
+                logger.error("<-- Order process failed! -->");
                 logger.error("Recipient could not be added");
+                try {
+                    const removedOrder = await this.removeOrder(orderID.orderID);
+                    if (removedOrder) {
+                        logger.info("Order removed");
+                        try {
+                            const removedHandlingInfo = await this.removeHandlingInfo(orderID.orderID);
+                            if (removedHandlingInfo) {
+                                logger.info("HandlingInfo removed");
+                                return {
+                                    response: "Order process failed!",
+                                };
+                            } else {
+                                logger.error("HandlingInfo could not be removed");
+                                return {
+                                    response: "HandlingInfo could not be removed",
+                                };
+                            }
+                        } catch (error) {
+                            logger.error(error);
+                            return {
+                                response: "Error removing handlingInfo",
+                            };
+                        }
+                    } else {
+                        logger.error("Order could not be removed");
+                        return {
+                            response: "Order could not be removed",
+                        };
+                    }
+                } catch (error) {
+                    logger.error(error);
+                    return {
+                        response: "Error removing order",
+                    };
+                }
+            } 
+
+            const orderEmail = {
+                storeID: order.storeID,
+                orderID: orderID.orderID,
+                timestamp: order.timestamp,
+                employeeName: order.employeeName ? order.employeeName : " ",
+                firstName: order.firstName,
+                lastName: order.lastName,
+                street: order.street,
+                houseNumber: order.houseNumber,
+                zip: order.zip,
+                packageSize: order.packageSize,
+                deliveryDate: order.deliveryDate,
+                customDropOffPlace: order.customDropOffPlace ? order.customDropOffPlace : " ",
+                handlingInfo: order.handlingInfo ? order.handlingInfo : " "
+            };
+
+            try {
+                emailSender.sendOrderEmail(orderEmail,order.email);
+
                 return {
-                    response: "Recipient could not be added",
+                    response: "Order successfully added",
+                    orderID: orderID.orderID,
                 };
+            } catch (error) {
+                return {
+                    response: "Error sending email",
+                }
             }
     
-            return {
-                response: "Order successfully added",
-                orderID: orderID.orderID,
-            };
         } catch (error) {
             logger.error(error);
             return {
@@ -174,9 +249,9 @@ class OrderService {
             if (orders) {
                 return orders;
             } else {
-                logger.error("Orders could not be retrieved");
+                logger.info("No orders have been placed yet");
                 return {
-                    response: "Orders could not be retrieved",
+                    response: "No orders have been placed yet",
                 };
             }
         } catch (error) {
@@ -221,6 +296,48 @@ class OrderService {
                 return true;
             } else {
                 logger.error("Recipient could not be added");
+                return false;
+            }
+        } catch (error) {
+            logger.error(error);
+            return false;
+        }
+    }
+
+    async removeOrder(orderID) {
+        try {
+            if (!orderID) {
+                logger.error("OrderID is null or undefined");
+                return false;
+            }
+            const removedOrder = await this.database.deleteOrder(orderID);
+
+            if (removedOrder) {
+                logger.info("removedOrder: " + removedOrder);
+                return true;
+            } else {
+                logger.error("removedOrder could not be removed");
+                return false;
+            }
+        } catch (error) {
+            logger.error(error);
+            return false;
+        }
+    }
+
+    async removeHandlingInfo(orderID) {
+        try {
+            if (!orderID) {
+                logger.error("OrderID is null or undefined");
+                return false;
+            }
+            const removedHandlingInfo = await this.database.deleteHandlingInfo(orderID);
+
+            if (removedHandlingInfo) {
+                logger.info("removedHandlingInfo: " + removedHandlingInfo);
+                return true;
+            } else {
+                logger.error("HandlingInfo could not be removed");
                 return false;
             }
         } catch (error) {
