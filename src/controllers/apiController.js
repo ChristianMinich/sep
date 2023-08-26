@@ -11,14 +11,21 @@ const logger = require("../utils/logger");
  * @class ApiController
  * @typedef {ApiController}
  */
-class ApiController extends AbstractController{
-    constructor(){
-      super();
-    }
+class ApiController extends AbstractController {
+  constructor() {
+    super();
+  }
 
   order(req, res) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
+    logger.info(req.body);
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       try {
         const orderObject = new Order(
           decoded.storeID,
@@ -32,83 +39,139 @@ class ApiController extends AbstractController{
           req.body.packageSize,
           req.body.handlingInfo,
           req.body.deliveryDate,
-          req.body.customDropOffPlace
+          req.body.customDropOffPlace,
+          decoded.email
         );
-          orderObject
-            .placeOrder()
-            .then((result) => {
-              res.status(200).send(result);
-            })
-            .catch((error) => {
-              res.status(403).send(error);
-            });
+        orderObject
+          .placeOrder()
+          .then((result) => {
+            logger.info(
+              "Order has been placed with the orderID: " + result.orderID
+            );
+            logger.info(result.response);
+            res.status(200).send(result);
+          })
+          .catch((error) => {
+            logger.error(error);
+            res.status(403).send(error);
+          });
       } catch (error) {
-        console.log(error);
+        logger.error(error);
         res.status(403).send("Invalid order object");
       }
     } catch (error) {
+      logger.error(error);
       res.status(403).send("Invalid token");
     }
   }
 
   allOrders(req, res) {
+    const token = req.headers.authorization;
+    logger.info(token);
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       services.orderService
         .getAllOrdersOfStore(decoded.storeID)
         .then((result) => {
+          logger.info("retrieved all orders of store " + decoded.storeID);
           res.status(200).send(result);
         })
         .catch((error) => {
+          logger.error(error);
           res.status(403).send(error);
         });
     } catch (error) {
+      logger.error(error);
       res.status(403).send("Invalid token");
     }
   }
 
   getSettings(req, res) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       services.storeService
         .getSettings(decoded.storeID)
         .then((result) => {
+          logger.info("retrieved settings of store " + decoded.storeID);
           res.status(200).send(result);
         })
         .catch((error) => {
+          logger.error(error);
           res.status(403).send(error);
         });
     } catch (error) {
+      logger.error(error);
       res.status(403).send("Invalid token");
     }
   }
 
   setSettings(req, res) {
-    logger.info(req.body);
+    const token = req.headers.authorization;
+    logger.info(token);
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
     logger.info(req.body.token);
     logger.info(req.body.parameter);
     logger.info(req.body.value);
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       try {
         const settingsObject = new Settings(
           decoded.storeID,
           req.body.parameter,
           req.body.value
         );
-        try{
-          settingsObject.updateParameter().then((result) => {
-            if(result){
-              res.status(200).send("Settings updated");
-            }else{
-              logger.error("Error updating settings");
-              res.status(403).send("Error updating settings");
-            }
-          }).catch((error) => {
-            logger.error(error);
-            res.status(403).send(error);
-          });
-        }catch(error){
+        try {
+          settingsObject
+            .updateParameter()
+            .then(async (result) => {
+              if (result) {
+                try {
+                  const token = await services.userService.generateJWT(
+                    decoded.username
+                  );
+                  if (token) {
+                    logger.info(`Token generated for user ${decoded.username}`);
+                    res.cookie("accessToken", token, { httpOnly: false });
+                    logger.info("Settings updated for " + decoded.storeID);
+                    logger.info("Token: " + token);
+                    return res.status(200).json({ token });
+                  } else {
+                    logger.warn(`Error generating token for user ${username}`);
+                    return res
+                      .status(500)
+                      .json({ message: "Error generating token" });
+                  }
+                } catch (error) {
+                  logger.error(error);
+                  return res
+                    .status(500)
+                    .json({ message: "Error generating token" });
+                }
+              } else {
+                logger.error("Error updating settings");
+                res.status(403).send("Error updating settings");
+              }
+            })
+            .catch((error) => {
+              logger.error(error);
+              res.status(403).send(error);
+            });
+        } catch (error) {
           logger.error(error);
           res.status(403).send(error);
         }
@@ -120,12 +183,17 @@ class ApiController extends AbstractController{
       logger.error(error);
       res.status(403).send("Invalid token");
     }
-    
   }
 
   setAddress(req, res) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       try {
         const addressObject = new Address(
           decoded.storeID,
@@ -134,19 +202,25 @@ class ApiController extends AbstractController{
           req.body.address.zip
         );
         try {
-          addressObject.updateAddress().then((result) => {
-            logger.info("result" + result);
-            if(result){
-              res.status(200).send("Address updated");
-            }else{
-              logger.error("Error updating address");
-              res.status(403).send("Error updating address");
-            }
-          }).catch((error) => {
-            logger.error(error);
-          });
+          addressObject
+            .updateAddress()
+            .then((result) => {
+              logger.info("result" + result);
+              if (result) {
+                logger.info("Address updated for " + decoded.storeID);
+                res.status(200).send("Address updated");
+              } else {
+                logger.error("Error updating address");
+                res.status(403).send("Error updating address");
+              }
+            })
+            .catch((error) => {
+              logger.error(error);
+              res.status(403).send(error);
+            });
         } catch (error) {
           logger.error(error);
+          res.status(403).send(error);
         }
       } catch (error) {
         logger.error(error);
@@ -166,15 +240,16 @@ class ApiController extends AbstractController{
           if (details !== null) {
             res.status(200).send(JSON.stringify(details));
           } else {
+            logger.warn("No Store-Details Found!");
             res.status(400).send("No Store-Details Found!");
           }
         })
         .catch((error) => {
-          console.log(error);
+          logger.error(error);
           res.status(500).send("Error fetching Store-Details!");
         });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       res.status(500).send("Error fetching Store-Details!");
     }
   }

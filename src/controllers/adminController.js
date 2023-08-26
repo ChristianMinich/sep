@@ -45,6 +45,14 @@ class AdminController extends AbstractController{
         res.status(200).sendFile(path.resolve("public/setSettings.html"));
     }
 
+    setAddress(req, res){
+        res.status(200).sendFile(path.resolve("public/setAddress.html"));
+    }
+
+    tokenData(req, res){
+        res.status(200).sendFile(path.resolve("public/tokenData.html"));
+    }
+
 }   
 
 module.exports = new AdminController();

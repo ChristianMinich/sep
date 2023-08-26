@@ -29,8 +29,10 @@ class AuthController extends AbstractController {
       const { username, password } = req.body;
 
       if (!username) {
+        logger.warn("Username not set");
         return res.status(400).json({ message: "Username not set" });
       } else if (!password) {
+        logger.warn("Password not set");
         return res.status(400).json({ message: "Password not set" });
       }
 
@@ -95,7 +97,6 @@ class AuthController extends AbstractController {
       //req.body.password = hashedPassword;
 
       //!svc.doesStoreExist(req.body.STORE_NAME)
-      console.log("Creating store...");
 
       const newStore = new Store(
         req.body.storeName,
@@ -111,8 +112,6 @@ class AuthController extends AbstractController {
         req.body.backgroundImage
       );
 
-      console.log(newStore);
-
       if (newStore.validateStore(newStore)) {
         try {
           const response = await newStore.createStore();
@@ -120,30 +119,40 @@ class AuthController extends AbstractController {
           console.log(response);
 
           if (response === "Store added") {
+            logger.info("Store added");
             res.status(200).send("Store added");
           } else {
+            logger.error("Error creating store! " + response);
             res.status(403).send(response);
           }
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          logger.error(error);
           res.status(500).send("Error creating store!");
         }
       } else {
+        logger.error("Invalid store!");
         res.status(403).send("Invalid store!");
       }
       /*} else {
         res.status(403).send("Invalid register code!");
       }*/
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       res.status(500).send("An error occurred during registration");
     }
   }
 
   async updatePassword(req, res) {
-    console.log(req.body);
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
+
     try {
-      const decoded = services.userService.getData(req.body.token);
+      const decoded = services.userService.getData(token);
       console.log(decoded);
       try {
         services.userService
@@ -154,6 +163,7 @@ class AuthController extends AbstractController {
           )
           .then((result) => {
             if (result) {
+              logger.info("Password updated for " + decoded.username);
               res.status(200).send("Password updated");
             } else {
               logger.error("Error updating password");
@@ -169,6 +179,46 @@ class AuthController extends AbstractController {
         res.status(403).send("Invalid password object");
       }
     } catch (error) {
+      logger.error(error);
+      res.status(403).send("Invalid token");
+    }
+  }
+
+  async testToken(req, res) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      logger.info("No token provided");
+      res.status(403).send("No token provided");
+    }
+
+    logger.info(token);
+
+    try {
+      const decoded = services.userService.getData(
+        token.replace("Bearer ", "")
+      );
+      logger.info("token: " + decoded);
+      res.status(200).send(decoded);
+    } catch (error) {
+      logger.error(error);
+      res.status(403).send("Invalid token");
+    }
+  }
+
+  async tokenData(req, res) {
+    try {
+      const decoded = services.userService.getData(req.body.token);
+      logger.info("token: " + decoded);
+      logger.info("token: " + decoded.storeName);
+      logger.info("token: " + decoded.owner);
+      logger.info("token: " + decoded.logo);
+      logger.info("token: " + decoded.telephone);
+      logger.info("token: " + decoded.email);
+      logger.info("token: " + decoded.username);
+      res.status(200).send(decoded);
+    } catch (error) {
+      logger.error(error);
       res.status(403).send("Invalid token");
     }
   }
