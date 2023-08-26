@@ -36,6 +36,10 @@ class ExpressServer {
         this.httpServer.listen(this.port, () => {
             console.log(`Server started at Port ${this.port}`);
             logger.info(`Server started at Port ${this.port}`);
+
+            /* setInterval(() => {
+                logger.memory("Memory usage");
+            }, 1000); */
         });
     }
 }
