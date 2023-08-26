@@ -4,9 +4,15 @@ class OrderRepository extends AbstractRepository {
     super(database);
   }
 
-  cancelOrder(ORDER_ID) {
+  deleteOrder(orderID) {
     let sql = "DELETE FROM DELIVERY_ORDER WHERE ORDER_ID = ?";
-    let params = [ORDER_ID];
+    let params = [orderID];
+    return this.database.queryWithoutResponse(sql, params);
+  }
+
+  deleteHandlingInfo(orderID) {
+    let sql = "DELETE FROM HANDLINGINFO WHERE ORDER_ID = ?";
+    let params = [orderID];
     return this.database.queryWithoutResponse(sql, params);
   }
 

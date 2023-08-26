@@ -7,6 +7,14 @@ const logger = require("../utils/logger");
 
 const UPLOAD_FOLDER = path.join(__dirname, "../../public/Images/");
 
+
+/**
+ * Service for the store
+ * @date 8/25/2023 - 10:49:02 PM
+ *
+ * @class StoreService
+ * @typedef {StoreService}
+ */
 class StoreService {
   constructor(database, addressService, userService) {
     this.database = database;
@@ -14,6 +22,14 @@ class StoreService {
     this.userService = userService;
   }
 
+  
+  /**
+   * Gets all stores from the database
+   * @date 8/25/2023 - 8:30:13 PM
+   *
+   * @async
+   * @returns {Object}
+   */
   async storeDetails() {
     try {
       const result = await this.database.storeDetails();
@@ -47,6 +63,15 @@ class StoreService {
     }
   }
 
+  
+  /**
+   * adds a store to the database
+   * @date 8/25/2023 - 8:29:59 PM
+   *
+   * @async
+   * @param {*} store
+   * @returns {Boolean}
+   */
   async addStore(store) {
     if (!store) {
       logger.error("Store is null or undefined");
@@ -177,6 +202,15 @@ class StoreService {
     }
   }
 
+  
+  /**
+   * Gets the settings of a store by storeID
+   * @date 8/25/2023 - 8:24:04 PM
+   *
+   * @async
+   * @param {*} storeID
+   * @returns {Object}
+   */
   async getSettings(storeID) {
     try {
       const store = await this.database.selectStoreByStoreID(storeID);
@@ -191,7 +225,7 @@ class StoreService {
 
           if (zip !== null && zip !== undefined) {
             const response = {
-              token: "",
+              storeID: storeID,
               storeName: store.STORENAME,
               owner: store.OWNER,
               address: {

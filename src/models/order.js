@@ -12,7 +12,8 @@ class Order {
     packageSize,
     handlingInfo,
     deliveryDate,
-    customDropOffPlace
+    customDropOffPlace,
+    email
   ) {
     this.storeID =
       storeID !== null && storeID !== undefined
@@ -59,6 +60,7 @@ class Order {
       customDropOffPlace !== null && customDropOffPlace !== undefined
         ? customDropOffPlace
         : " ";
+    this.email = email !== null && email !== undefined ? email : "";
   }
 
   throwError(property) {
