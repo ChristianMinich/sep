@@ -24,6 +24,8 @@ class AdminRouter extends AbstractRouter{
         this.router.get("/login", controller.AdminController.login);
         this.router.get("/getSettings", controller.AdminController.getSettings);
         this.router.get("/setSettings", controller.AdminController.setSettings);
+        this.router.get("/setAddress", controller.AdminController.setAddress);
+        this.router.get("/tokenData", controller.AdminController.tokenData);
     }
 }
 

@@ -9,9 +9,9 @@ class ApiRouter extends AbstractRouter{
 
     initializeRoutes(){
         this.router.post("/order", controller.ApiController.order);
-        this.router.post("/allOrders", controller.ApiController.allOrders);
-        this.router.post("/getSettings", controller.ApiController.getSettings);
-        this.router.post("/setSettings", controller.ApiController.setSettings);
+        this.router.get("/allOrders", controller.ApiController.allOrders);
+        this.router.get("/settings", controller.ApiController.getSettings);
+        this.router.post("/settings", controller.ApiController.setSettings);
         this.router.post("/setAddress", controller.ApiController.setAddress);
         this.router.get("/store-details", controller.ApiController.storeDetails);
     }
