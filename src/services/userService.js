@@ -106,7 +106,7 @@ class UserService {
   
 
   getData(token) {
-    return jwt.verify(token, process.env.JWT_SECRET); // process.env.JWT_SECRET
+    return jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET); // process.env.JWT_SECRET
   }
 
   async getUsernameByStoreID(storeID) {
