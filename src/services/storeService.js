@@ -82,19 +82,19 @@ class StoreService {
       console.log("doesStoreExist " + storeExists);
 
       if (!storeExists) {
-        const storeZipID = await this.addressService.getZipID(store._zip);
+        const storeZipID = await this.addressService.getZipID(store._address._zip);
         if (storeZipID !== null && storeZipID !== undefined) {
           const addedAddress = await this.addressService.newAddAddress(
-            store._street,
-            store._houseNumber,
-            store._zip,
+            store._address._street,
+            store._address._houseNumber,
+            store._address._zip,
             storeZipID
           );
 
           if (addedAddress) {
             const storeAddressID = await this.addressService.getAddressID(
-              store._street,
-              store._houseNumber,
+              store._address._street,
+              store._address._houseNumber,
               storeZipID
             );
 
@@ -337,17 +337,17 @@ class StoreService {
       return false;
     }
 
-    if (parameters.includes(settings.parameter)) {
+    if (parameters.includes(settings._parameter)) {
       return await this.updatingParameters(
-        settings.storeID,
-        settings.parameter,
-        settings.value
+        settings._storeID,
+        settings._parameter,
+        settings._value
       );
     } else {
-      switch (settings.parameter) {
+      switch (settings._parameter) {
         case "logo":
           try {
-            const logoImageBuffer = Buffer.from(settings.value, "base64");
+            const logoImageBuffer = Buffer.from(settings._value, "base64");
             const logoImageFilename = uuid.v4();
             const logoImageFilepath = path.join(
               UPLOAD_FOLDER,
@@ -356,7 +356,7 @@ class StoreService {
             fs.writeFileSync(logoImageFilepath, logoImageBuffer);
 
             const oldLogoImageFilename =
-              await this.database.selectLogoByStoreID(settings.storeID);
+              await this.database.selectLogoByStoreID(settings._storeID);
             if (
               oldLogoImageFilename !== null &&
               oldLogoImageFilename !== undefined
@@ -369,8 +369,8 @@ class StoreService {
             }
 
             const result = await this.updatingParameters(
-              settings.storeID,
-              settings.parameter,
+              settings._storeID,
+              settings._parameter,
               logoImageFilename
             );
             if (result) {
@@ -385,7 +385,7 @@ class StoreService {
 
         case "backgroundImage":
           try {
-            const backgroundImageBuffer = Buffer.from(settings.value, "base64");
+            const backgroundImageBuffer = Buffer.from(settings._value, "base64");
             const backgroundImageFilename = uuid.v4();
             const backgroundImageFilepath = path.join(
               UPLOAD_FOLDER,
@@ -396,7 +396,7 @@ class StoreService {
 
             const oldBackgroundImageFilename =
               await this.database.selectBackgroundImageByStoreID(
-                settings.storeID
+                settings._storeID
               );
             if (
               oldBackgroundImageFilename !== null &&
@@ -414,8 +414,8 @@ class StoreService {
             );
 
             const result = await this.updatingParameters(
-              settings.storeID,
-              settings.parameter,
+              settings._storeID,
+              settings._parameter,
               backgroundImageFilename
             );
             if (result) {
@@ -433,12 +433,12 @@ class StoreService {
         case "password":
           try {
             const username = await this.database.selectUsernameByStoreID(
-              settings.storeID
+              settings._storeID
             );
             if (username !== null && username !== undefined) {
               const result = await this.userService.updateLoginCredentials(
                 username,
-                settings.value
+                settings._value
               );
               if (result) {
                 return true;

@@ -21,7 +21,7 @@ class AddressService {
       if (!recipient) {
         const locatorObject = new locator(houseNumber, street, zip);
         const coordinates = await locatorObject.getCoordinates();
-        if (coordinates !== null) {
+        if (coordinates !== null && coordinates !== undefined && Object.keys(coordinates).length >= 2) {
           try {
             const addedAddress = await this.database.insertAddress(
               street,
@@ -134,7 +134,7 @@ class AddressService {
     }
   }
 
-  async newUpdateAddress(address) {
+  async newUpdateAddress(storeID, address) {
     if (!address) {
       logger.error("Missing required parameters");
       return false;
@@ -151,7 +151,7 @@ class AddressService {
 
     try {
       const currentAddressID = await this.getAddressIDByStoreID(
-        address._storeID
+        storeID,
       );
       if (currentAddressID !== null && currentAddressID !== undefined) {
         logger.info("Current AddressID: " + currentAddressID);
