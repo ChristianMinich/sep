@@ -1,24 +1,22 @@
 const svc = require("../services");
 class Address{
     constructor(
-        storeID,
         street,
         houseNumber,
         zip,
     )
     {
-        this._storeID = storeID !== null && storeID !== undefined ? storeID : this.throwError("storeID");
-        this._street = street !== null && street !== undefined ? street : this.throwError("street");
-        this._houseNumber = houseNumber !== null && houseNumber !== undefined ? houseNumber : this.throwError("houseNumber");
-        this._zip = zip !== null && zip !== undefined ? zip : this.throwError("zip");
+        this._street = street !== null && street !== undefined && street !== "" ? street : this.throwError("street");
+        this._houseNumber = houseNumber !== null && houseNumber !== undefined && houseNumber !== "" ? houseNumber : this.throwError("houseNumber");
+        this._zip = zip !== null && zip !== undefined && zip !== "" ? zip : this.throwError("zip");
     }
 
     throwError(property) {
         throw new Error(`Missing property ${property}`);
       }
 
-    updateAddress(){
-        return svc.addressService.newUpdateAddress(this);
+    updateAddress(storeID){
+        return svc.addressService.newUpdateAddress(storeID, this);
     }
 
     get street(){

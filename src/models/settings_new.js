@@ -1,38 +1,35 @@
 const svc = require('../services');
-class Settings{
-    constructor(
-        storeID,
-        parameter,
-        value
-    ){
-        this.storeID = storeID !== null && storeID !== undefined ? storeID : this.throwError("storeID");
-        this.parameter = parameter !== null && parameter !== undefined ? parameter : this.throwError("parameter");
-        this.value = value !== null && value !== undefined ? value : this.throwError("value");
+
+class Settings {
+    constructor(storeID, parameter, value) {
+        this._storeID = storeID !== null && storeID !== undefined && storeID !== "" ? storeID : this.throwError("storeID");
+        this._parameter = parameter !== null && parameter !== undefined && parameter !== "" ? parameter : this.throwError("parameter");
+        this._value = value !== null && value !== undefined && value !== "" ? value : this.throwError("value");
     }
 
     throwError(property) {
         throw new Error(`Missing property ${property}`);
     }
 
-    updateParameter(){
+    updateParameter() {
         return svc.storeService.updateParameters(this);
     }
 
-    // function for changing logo and background image.
+    // Function for changing logo and background image.
 
-    get storeID(){
+    get storeID() {
         return this._storeID;
     }
 
-    set storeID(storeID){
+    set storeID(storeID) {
         this._storeID = storeID;
     }
 
-    get parameter(){
+    get parameter() {
         return this._parameter;
     }
 
-    set parameter(parameter){
+    set parameter(parameter) {
         this._parameter = parameter;
     }
 }

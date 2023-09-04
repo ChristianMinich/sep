@@ -4,77 +4,49 @@ class Order {
     storeID,
     timestamp,
     employeeName,
-    firstName,
-    lastName,
-    street,
-    houseNumber,
-    zip,
+    recipient,
     packageSize,
     handlingInfo,
     deliveryDate,
     customDropOffPlace,
     email
   ) {
-    this.storeID =
+    this._storeID =
       storeID !== null && storeID !== undefined
         ? storeID
         : this.throwError("storeID");
-    this.timestamp =
+    this._timestamp =
       timestamp !== null && timestamp !== undefined
         ? timestamp
         : this.throwError("timestamp");
-    this.employeeName =
+    this._employeeName =
       employeeName !== null && employeeName !== undefined
         ? employeeName
         : this.throwError("employeeName");
-    this.firstName =
-      firstName !== null && firstName !== undefined
-        ? firstName
-        : this.throwError("firstName");
-    this.lastName =
-      lastName !== null && lastName !== undefined
-        ? lastName
-        : this.throwError("lastName");
-    this.street =
-      street !== null && street !== undefined
-        ? street
-        : this.throwError("street");
-    this.houseNumber =
-      houseNumber !== null && houseNumber !== undefined
-        ? houseNumber
-        : this.throwError("houseNumber");
-    this.zip = zip !== null && zip !== undefined ? zip : this.throwError("zip");
-    this.packageSize =
+    this._recipient =
+      recipient !== null && recipient !== undefined
+        ? recipient
+        : this.throwError("recipient");
+    this._packageSize =
       packageSize !== null && packageSize !== undefined
         ? packageSize
         : this.throwError("packageSize");
-    this.handlingInfo =
-      handlingInfo !== null && handlingInfo !== undefined
-        ? handlingInfo
-        : "";
-    this.deliveryDate =
+    this._handlingInfo =
+      handlingInfo !== null && handlingInfo !== undefined ? handlingInfo : "";
+    this._deliveryDate =
       deliveryDate !== null && deliveryDate !== undefined
         ? deliveryDate
         : this.throwError("deliveryDate");
-    this.customDropOffPlace = customDropOffPlace;
+    this._customDropOffPlace =
       customDropOffPlace !== null && customDropOffPlace !== undefined
         ? customDropOffPlace
         : " ";
-    this.email = email !== null && email !== undefined ? email : "";
+
+    this._email = email !== null && email !== undefined ? email : "";
   }
 
   throwError(property) {
     throw new Error(`Missing property ${property}`);
-  }
-
-  validateOrder(order) {
-    const orderProperties = Object.values(order);
-    for (const property of orderProperties) {
-      if (property === undefined || property === null) {
-        return false;
-      }
-    }
-    return true;
   }
 
   placeOrder() {

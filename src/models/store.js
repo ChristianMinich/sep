@@ -1,21 +1,19 @@
 const svc = require("../services");
 
-class store {
+class Store {
   constructor(
     storeName,
     username,
     password,
     owner,
-    street,
-    houseNumber,
-    zip,
+    address,
     telephone,
     email,
     logo,
     backgroundImage
   ) {
     this._storeName =
-    storeName !== null && storeName !== undefined
+      storeName !== null && storeName !== undefined
         ? storeName
         : this.throwError("storeName");
     this._username =
@@ -28,15 +26,10 @@ class store {
         : this.throwError("password");
     this._owner =
       owner !== null && owner !== undefined ? owner : this.throwError("owner");
-    this._street =
-      street !== null && street !== undefined
-        ? street
-        : this.throwError("street");
-    this._houseNumber =
-      houseNumber !== null && houseNumber !== undefined
-        ? houseNumber
-        : this.throwError("houseNumber");
-    this._zip = zip !== null && zip !== undefined ? zip : this.throwError("zip");
+    this._address =
+      address !== null && address !== undefined
+        ? address
+        : this.throwError("address");
     this._telephone =
       telephone !== null && telephone !== undefined
         ? telephone
@@ -46,35 +39,29 @@ class store {
     this._logo =
       logo !== null && logo !== undefined ? logo : "defaultLogo.png";
     this._backgroundImage =
-    backgroundImage !== null && backgroundImage !== undefined ? backgroundImage : this.throwError("backgroundImage");
+      backgroundImage !== null && backgroundImage !== undefined
+        ? backgroundImage
+        : this.throwError("backgroundImage");
   }
 
   throwError(property) {
     throw new Error(`Missing property ${property}`);
   }
 
-  validateStore(store) {
-    const storeProperties = Object.values(store);
-    for (const property of storeProperties) {
-      if (property === undefined || property === null || property === "") {
-        return false;
-      }
-    }
-    return true;
-  }
-
   createStore() {
-      try {
-        console.log("called createStore in store.js model")
-        return svc.storeService.addStore(this);
-      } catch (error) {
-        return null;
-      }
+    try {
+      console.log("called createStore in store.js model");
+      return svc.storeService.addStore(this);
+    } catch (error) {
+      return null;
+    }
   }
 
   updateStoreSettings() {
     svc.updateStoreSettings(this);
   }
+
+  // Setter methods
 
   set storeName(newStoreName) {
     this._storeName = newStoreName;
@@ -92,16 +79,8 @@ class store {
     this._owner = newOwner;
   }
 
-  set street(newStreet) {
-    this._street = newStreet;
-  }
-
-  set houseNumber(newHouseNumber) {
-    this._houseNumber = newHouseNumber;
-  }
-
-  set zip(newZip) {
-    this._zip = newZip;
+  set address(newAddress) {
+    this._address = newAddress;
   }
 
   set telephone(newTelephone) {
@@ -120,6 +99,8 @@ class store {
     this._backgroundImage = newBackgroundImage;
   }
 
+  // Getter methods
+
   get storeName() {
     return this._storeName;
   }
@@ -136,16 +117,8 @@ class store {
     return this._owner;
   }
 
-  get street() {
-    return this._street;
-  }
-
-  get houseNumber() {
-    return this._houseNumber;
-  }
-
-  get zip() {
-    return this._zip;
+  get address() {
+    return this._address;
   }
 
   get telephone() {
@@ -165,4 +138,4 @@ class store {
   }
 }
 
-module.exports = store;
+module.exports = Store;
