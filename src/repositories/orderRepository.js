@@ -121,18 +121,18 @@ class OrderRepository extends AbstractRepository {
   selectAllOrdersOfStore(storeID) {
     let sql = `
     SELECT
-        o.orderID,
-        o.timestamp,
-        o.employeeName,
-        o.packageSize,
-        o.deliveryDate,
-        o.customDropoffPlace,
-        h.handlingInfo,
-        r.firstName,
-        r.lastName,
-        a.street,
-        a.houseNumber,
-        z.ZIP
+        o.orderID AS orderID,
+        o.timestamp AS timestamp,
+        o.employeeName AS employeeName,
+        o.packageSize AS packageSize,
+        o.deliveryDate AS deliveryDate,
+        o.customDropOffPlace AS customDropOffPlace,
+        h.handlingInfo AS handlingInfo,
+        r.firstName AS firstName,
+        r.lastName AS lastName,
+        a.street AS street,
+        a.houseNumber AS houseNumber,
+        z.ZIP AS zip
     FROM
         DELIVERY_ORDER o
     JOIN
