@@ -2,6 +2,7 @@ const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
 const Settings = require("../models/settings_new");
+const Recipient = require("../models/recipient");
 const Address = require("../models/address");
 const logger = require("../utils/logger");
 /**
@@ -31,11 +32,15 @@ class ApiController extends AbstractController {
           decoded.storeID,
           req.body.timestamp,
           req.body.employeeName,
-          req.body.firstName,
-          req.body.lastName,
-          req.body.street,
-          req.body.houseNumber,
-          req.body.zip,
+          new Recipient(
+            req.body.recipient.firstName,
+            req.body.recipient.lastName,
+            new Address(
+              req.body.recipient.address.street,
+              req.body.recipient.address.houseNumber,
+              req.body.recipient.address.zip
+            )
+          ),
           req.body.packageSize,
           req.body.handlingInfo,
           req.body.deliveryDate,
@@ -196,14 +201,13 @@ class ApiController extends AbstractController {
       const decoded = services.userService.getData(token);
       try {
         const addressObject = new Address(
-          decoded.storeID,
           req.body.address.street,
           req.body.address.houseNumber,
           req.body.address.zip
         );
         try {
           addressObject
-            .updateAddress()
+            .updateAddress(decoded.storeID)
             .then((result) => {
               logger.info("result" + result);
               if (result) {

@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const Store = require("../models/store");
 const services = require("../services");
 const logger = require("../utils/logger");
+const Address = require("../models/address");
 /**
  * Controller for the authentication endpoints.
  * @date 8/12/2023 - 11:05:33 PM
@@ -103,35 +104,28 @@ class AuthController extends AbstractController {
         req.body.username,
         req.body.password,
         req.body.owner,
-        req.body.street,
-        req.body.houseNumber,
-        req.body.zip,
+        new Address(req.body.street, req.body.houseNumber, req.body.zip),
         req.body.telephone,
         req.body.email,
         req.body.logo,
         req.body.backgroundImage
       );
 
-      if (newStore.validateStore(newStore)) {
-        try {
-          const response = await newStore.createStore();
+      try {
+        const response = await newStore.createStore();
 
-          console.log(response);
+        console.log(response);
 
-          if (response === "Store added") {
-            logger.info("Store added");
-            res.status(200).send("Store added");
-          } else {
-            logger.error("Error creating store! " + response);
-            res.status(403).send(response);
-          }
-        } catch (error) {
-          logger.error(error);
-          res.status(500).send("Error creating store!");
+        if (response === "Store added") {
+          logger.info("Store added");
+          res.status(200).send("Store added");
+        } else {
+          logger.error("Error creating store! " + response);
+          res.status(403).send(response);
         }
-      } else {
-        logger.error("Invalid store!");
-        res.status(403).send("Invalid store!");
+      } catch (error) {
+        logger.error(error);
+        res.status(500).send("Error creating store!");
       }
       /*} else {
         res.status(403).send("Invalid register code!");
@@ -143,7 +137,6 @@ class AuthController extends AbstractController {
   }
 
   async updatePassword(req, res) {
-
     const token = req.headers.authorization;
 
     if (!token) {
