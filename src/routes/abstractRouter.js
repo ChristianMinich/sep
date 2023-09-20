@@ -2,20 +2,34 @@ const express = require("express");
 
 /**
  * Abstract class for defining routers.
- * @date 8/14/2023 - 3:21:53 PM
- *
  * @class AbstractRouter
  * @typedef {AbstractRouter}
+ * @date 8/14/2023 - 3:21:53 PM
  */
 class AbstractRouter {
-    constructor() {
-        this.router = express.Router();
-        this.initializeRoutes();
-    }
+  /**
+   * Creates an instance of AbstractRouter.
+   */
+  constructor() {
+    /**
+     * Express router instance.
+     * @type {express.Router}
+     */
+    this.router = new express.Router();
 
-    initializeRoutes() {
-        throw new Error("Not implemented");
-    }
+    // Initialize routes for the router.
+    this.initializeRoutes();
+  }
+
+  /**
+   * Initialize routes for the router. Must be implemented by subclasses.
+   * @abstract
+   * @throws {Error} When not implemented by a subclass.
+   * @memberof AbstractRouter
+   */
+  initializeRoutes() {
+    throw new Error("Not implemented");
+  }
 }
 
 module.exports = AbstractRouter;

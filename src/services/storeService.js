@@ -1,4 +1,8 @@
+/**
+ * Load environment variables from a .env file (if available).
+ */
 require("dotenv").config();
+
 const uuid = require("uuid");
 const fs = require("fs");
 const path = require("path");
@@ -7,28 +11,30 @@ const logger = require("../utils/logger");
 
 const UPLOAD_FOLDER = path.join(__dirname, "../../public/Images/");
 
-
 /**
- * Service for the store
- * @date 8/25/2023 - 10:49:02 PM
- *
- * @class StoreService
+ * Service for managing store-related operations.
+ * @class
  * @typedef {StoreService}
+ * @date 8/25/2023 - 10:49:02 PM
  */
 class StoreService {
+  /**
+   * Creates an instance of StoreService.
+   * @constructor
+   * @param {Object} database - The database service for interacting with the database.
+   * @param {Object} addressService - The address service for handling address-related operations.
+   * @param {Object} userService - The user service for managing user-related operations.
+   */
   constructor(database, addressService, userService) {
     this.database = database;
     this.addressService = addressService;
     this.userService = userService;
   }
 
-  
   /**
-   * Gets all stores from the database
-   * @date 8/25/2023 - 8:30:13 PM
-   *
+   * Retrieves details of all stores from the database.
    * @async
-   * @returns {Object}
+   * @return {Object[]} - An array of store details objects.
    */
   async storeDetails() {
     try {
@@ -63,14 +69,11 @@ class StoreService {
     }
   }
 
-  
   /**
-   * adds a store to the database
-   * @date 8/25/2023 - 8:29:59 PM
-   *
+   * Adds a new store to the database.
    * @async
-   * @param {*} store
-   * @returns {Boolean}
+   * @param {*} store - The store object to be added.
+   * @returns {Object} - An object with a response indicating the result of the operation.
    */
   async addStore(store) {
     if (!store) {
@@ -82,9 +85,11 @@ class StoreService {
       console.log("doesStoreExist " + storeExists);
 
       if (!storeExists) {
-        const storeZipID = await this.addressService.getZipID(store._address._zip);
+        const storeZipID = await this.addressService.getZipID(
+          store._address._zip
+        );
         if (storeZipID !== null && storeZipID !== undefined) {
-          const addedAddress = await this.addressService.newAddAddress(
+          const addedAddress = await this.addressService.addAddress(
             store._address._street,
             store._address._houseNumber,
             store._address._zip,
@@ -147,18 +152,18 @@ class StoreService {
                 if (addedStore) {
                   return {
                     response: "Store added",
-                  }
+                  };
                 } else {
                   logger.error("Store not added");
                   return {
                     response: "Store not added",
-                  }
+                  };
                 }
               } else {
                 logger.error("Login credentials not added");
                 return {
                   response: "Login credentials not added",
-                }
+                };
               }
             } else {
               logger.error("AddressID not found");
@@ -192,6 +197,14 @@ class StoreService {
     }
   }
 
+  /**
+   * Checks if a store with the given name exists in the database.
+   *
+   * @param {string} storeName - The name of the store to check for existence.
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the store exists,
+   *                            or `false` if it doesn't.
+   * @throws {Error} If an error occurs while checking the store's existence.
+   */
   async doesStoreExist(storeName) {
     try {
       const exists = await this.database.getExistingStore(storeName);
@@ -202,14 +215,11 @@ class StoreService {
     }
   }
 
-  
   /**
-   * Gets the settings of a store by storeID
-   * @date 8/25/2023 - 8:24:04 PM
-   *
+   * Gets the settings of a store by its storeID.
    * @async
-   * @param {*} storeID
-   * @returns {Object}
+   * @param {*} storeID - The ID of the store.
+   * @returns {Object} - An object containing store settings.
    */
   async getSettings(storeID) {
     try {
@@ -271,6 +281,12 @@ class StoreService {
     }
   }
 
+  /**
+   * Updates the settings of a store.
+   * @async
+   * @param {Object} settings - The updated store settings.
+   * @returns {boolean} - True if the settings were successfully updated, false otherwise.
+   */
   async setSettings(settings) {
     try {
       console.log(settings);
@@ -327,10 +343,13 @@ class StoreService {
     }
   }
 
+  /**
+   * Updates specific parameters of a store.
+   * @async
+   * @param {Object} settings - The updated store parameters.
+   * @returns {boolean|string} - True if the parameters were successfully updated, false otherwise. Returns "invalid Parameter" for invalid parameter values.
+   */
   async updateParameters(settings) {
-    /*logger.info("storeID" + settings.storeID);
-    logger.info("parameter" + settings.parameter);
-    logger.info("value" + settings.value); */
     const parameters = ["storeName", "owner", "telephone", "email"];
     if (!settings) {
       logger.error("Missing parameters");
@@ -385,7 +404,10 @@ class StoreService {
 
         case "backgroundImage":
           try {
-            const backgroundImageBuffer = Buffer.from(settings._value, "base64");
+            const backgroundImageBuffer = Buffer.from(
+              settings._value,
+              "base64"
+            );
             const backgroundImageFilename = uuid.v4();
             const backgroundImageFilepath = path.join(
               UPLOAD_FOLDER,
@@ -461,6 +483,14 @@ class StoreService {
     }
   }
 
+  /**
+   * Updates specific parameters of a store.
+   * @async
+   * @param {string} storeID - The ID of the store to update.
+   * @param {string} parameter - The parameter to update.
+   * @param {string} value - The new value for the parameter.
+   * @returns {boolean} - True if the parameters were successfully updated, false otherwise.
+   */
   async updatingParameters(storeID, parameter, value) {
     if (!storeID || !parameter || !value) {
       logger.error("Missing parameters");

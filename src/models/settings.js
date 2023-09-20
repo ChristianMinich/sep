@@ -1,115 +1,78 @@
 const svc = require("../services");
-class Settings{
-    constructor(
-        storeID,
-        storeName,
-        owner,
-        street,
-        houseNumber,
-        zip,
-        telephone,
-        email
-    ){
-        this.storeID = storeID !== null && storeID !== undefined ? storeID : this.throwError("storeID");
-        this.storeName = storeName !== null && storeName !== undefined ? storeName : this.throwError("storeName");
-        this.owner = owner !== null && owner !== undefined ? owner : this.throwError("owner");
-        this.street = street !== null && street !== undefined ? street : this.throwError("street");
-        this.houseNumber = houseNumber !== null && houseNumber !== undefined ? houseNumber : this.throwError("houseNumber");
-        this.zip = zip !== null && zip !== undefined ? zip : this.throwError("zip");
-        this.telephone = telephone !== null && telephone !== undefined ? telephone : this.throwError("telephone");
-        this.email = email !== null && email !== undefined ? email : this.throwError("email");
-    }
 
-    validateSettings(settings){
-        const settingsProperties = Object.values(settings);
-        for (const property of settingsProperties) {
-          if (property === undefined || property === null || property === "") {
-            return false;
-          }
-        }
-        return true;
-    }
+/**
+ * Represents settings for a store.
+ */
+class Settings {
+  /**
+   * Creates a new Settings instance.
+   * @param {string} storeID - The ID of the store.
+   * @param {string} parameter - The parameter setting.
+   * @param {string} value - The value of the setting.
+   */
+  constructor(storeID, parameter, value) {
+    this._storeID =
+      storeID !== null && storeID !== undefined && storeID !== ""
+        ? storeID
+        : this.throwError("storeID");
+    this._parameter =
+      parameter !== null && parameter !== undefined && parameter !== ""
+        ? parameter
+        : this.throwError("parameter");
+    this._value =
+      value !== null && value !== undefined && value !== ""
+        ? value
+        : this.throwError("value");
+  }
 
-    throwError(property) {
-        throw new Error(`Missing property ${property}`);
-    }
+  /**
+   * Throws an error for a missing property.
+   * @param {string} property - The name of the missing property.
+   * @throws {Error} An error indicating the missing property.
+   */
+  throwError(property) {
+    throw new Error(`Missing property ${property}`);
+  }
 
-    updateSettings(){
-        return svc.storeService.setSettings(this);
-    }
+  /**
+   * Updates the parameter setting for the store.
+   * @return {Promise} A promise that resolves when the parameter is updated.
+   */
+  updateParameter() {
+    return svc.storeService.updateParameters(this);
+  }
 
-    get storeID(){
-        return this._storeID;
-    }
+  /**
+   * Get the ID of the store.
+   * @return {string} The store ID.
+   */
+  get storeID() {
+    return this._storeID;
+  }
 
-    set storeID(storeID){
-        this._storeID = storeID;
-    }
+  /**
+   * Set the ID of the store.
+   * @param {string} storeID - The new store ID.
+   */
+  set storeID(storeID) {
+    this._storeID = storeID;
+  }
 
-    get storeName(){
-        return this._storeName;
-    }
+  /**
+   * Get the parameter setting.
+   * @return {string} The parameter setting.
+   */
+  get parameter() {
+    return this._parameter;
+  }
 
-    set storeName(storeName){
-        this._storeName = storeName;
-    }
-
-    get owner(){
-        return this._owner;
-    }
-
-    set owner(owner){
-        this._owner = owner;
-    }
-
-    get street(){
-        return this._street;
-    }
-
-    set street(street){
-        this._street = street;
-    }
-
-    get houseNumber(){
-        return this._houseNumber;
-    }
-
-    set houseNumber(houseNumber){
-        this._houseNumber = houseNumber;
-    }
-
-    get zip(){
-        return this._zip;
-    }
-
-    set zip(zip){
-        this._zip = zip;
-    }
-
-    get telephone(){
-        return this._telephone;
-    }
-
-    set telephone(telephone){
-        this._telephone = telephone;
-    }
-
-    get email(){
-        return this._email;
-    }
-
-    set email(email){
-        this._email = email;
-    }
-
-    get logo(){
-        return this._logo;
-    }
-
-    set logo(logo){
-        this._logo = logo;
-    }
-
+  /**
+   * Set the parameter setting.
+   * @param {string} parameter - The new parameter setting.
+   */
+  set parameter(parameter) {
+    this._parameter = parameter;
+  }
 }
 
 module.exports = Settings;

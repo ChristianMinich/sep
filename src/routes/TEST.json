@@ -1,0 +1,17 @@
+{
+	"timestamp": "",
+	"employeeName": "",
+	"recipient": {
+		"firstName": "",
+		"lastName": "",
+		"address": {
+			"street": "",
+			"houseNumber": "",
+			"zip": ""
+		}
+	},
+	"packageSize": "",
+	"handlingInfo": "",
+	"deliveryDate": "",
+	"customDropOffPlace": "" 
+}

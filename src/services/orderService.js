@@ -2,25 +2,40 @@ const logger = require("../utils/logger");
 const EmailSender = require("./mailService");
 const emailSender = new EmailSender();
 const allOrdersObject = require("../utils/allOrdersObject");
+/**
+ * Service for managing order-related operations.
+ */
 class OrderService {
+  /**
+   * Creates an instance of OrderService.
+   *
+   * @param {object} database - The database instance.
+   * @param {object} addressService - An instance of the AddressService.
+   */
   constructor(database, addressService) {
     this.database = database;
     this.addressService = addressService;
   }
 
+  /**
+   * Adds a new order to the database.
+   *
+   * @param {object} order - The order data.
+   * @return {Promise<object>} A Promise that resolves to an object with a response and orderID.
+   */
   async addOrder(order) {
     logger.info("order " + order);
     logger.info("order._recipient " + order._recipient);
     logger.info("order._recipient._address " + order._recipient._address);
     logger.info(
-      "order._recipient._address._zip " + order._recipient._address._zip
+      "order._recipient._address._zip " + order._recipient._address._zip,
     );
     logger.info(
-      "order._recipient._address._street " + order._recipient._address._street
+      "order._recipient._address._street " + order._recipient._address._street,
     );
     logger.info(
       "order._recipient._address._houseNumber " +
-        order._recipient._address._houseNumber
+        order._recipient._address._houseNumber,
     );
     logger.info("order._timestamp " + order._timestamp);
     logger.info("order._packageSize " + order._packageSize);
@@ -49,7 +64,7 @@ class OrderService {
       }
 
       const zipID = await this.addressService.getZipID(
-        order._recipient._address._zip
+        order._recipient._address._zip,
       );
       if (zipID === null || zipID === undefined) {
         logger.error("zipID: " + zipID + " ZIP DOES NOT EXIST");
@@ -63,18 +78,18 @@ class OrderService {
       let addressID = await this.addressService.getAddressID(
         order._recipient._address._street,
         order._recipient._address._houseNumber,
-        zipID
+        zipID,
       );
       if (addressID === null || addressID === undefined) {
         console.log("addressID: " + addressID + " ADRESS DOES NOT EXIST");
         if (order._recipient._address._houseNumber.length <= 5) {
           console.log("adding Address");
-          const addedAddress = await this.addressService.newAddAddress(
+          const addedAddress = await this.addressService.addAddress(
             order._recipient._address._street,
             order._recipient._address._houseNumber,
             order._recipient._address._zip,
             zipID,
-            true
+            true,
           );
           if (!addedAddress) {
             logger.error("Address could not be added");
@@ -86,7 +101,7 @@ class OrderService {
           addressID = await this.addressService.getAddressID(
             order._recipient._address._street,
             order._recipient._address._houseNumber,
-            zipID
+            zipID,
           );
           if (addressID === null || addressID === undefined) {
             logger.error("AddressID could not be retrieved");
@@ -101,8 +116,6 @@ class OrderService {
             response: "HouseNumber is too long",
           };
         }
-        //const response = await this.addingOrder(order, addressID);
-        //return response;
       } else {
         console.log("addressID: " + addressID + " ADDRESS EXISTS");
       }
@@ -117,8 +130,14 @@ class OrderService {
     }
   }
 
+  /**
+   * Adds an order to the system asynchronously.
+   *
+   * @param {Object} order - The order object to be added.
+   * @param {number} addressID - The ID of the address associated with the order.
+   * @return {Object} - An object with a response indicating the result of the operation.
+   */
   async addingOrder(order, addressID) {
-    //logger.info("customDropOffPlace: " + order.customDropOffPlace);
     try {
       const addedOrder = await this.database.insertOrder(
         order._timestamp,
@@ -127,7 +146,7 @@ class OrderService {
         order._deliveryDate,
         order._customDropOffPlace ? order._customDropOffPlace : " ",
         order._storeID,
-        addressID
+        addressID,
       );
 
       if (!addedOrder) {
@@ -145,7 +164,7 @@ class OrderService {
         order._deliveryDate,
         order._customDropOffPlace ? order._customDropOffPlace : " ",
         order._storeID,
-        addressID
+        addressID,
       );
 
       if (orderID === null || orderID === undefined) {
@@ -157,7 +176,7 @@ class OrderService {
 
       const addedHandlingInfo = this.addHandlingInfo(
         orderID.orderID,
-        order._handlingInfo ? order._handlingInfo : " "
+        order._handlingInfo ? order._handlingInfo : " ",
       );
 
       if (!addedHandlingInfo) {
@@ -187,7 +206,7 @@ class OrderService {
         orderID.orderID,
         order._recipient._firstName,
         order._recipient._lastName,
-        addressID
+        addressID,
       );
 
       if (!addedRecipient) {
@@ -199,7 +218,7 @@ class OrderService {
             logger.info("Order removed");
             try {
               const removedHandlingInfo = await this.removeHandlingInfo(
-                orderID.orderID
+                orderID.orderID,
               );
               if (removedHandlingInfo) {
                 logger.info("HandlingInfo removed");
@@ -270,6 +289,12 @@ class OrderService {
     }
   }
 
+  /**
+   * Retrieves all orders of a store from the database.
+   *
+   * @param {number} storeID - The ID of the store.
+   * @return {Promise<object[]>} A Promise that resolves to an array of order objects.
+   */
   async getAllOrdersOfStore(storeID) {
     try {
       if (!storeID) {
@@ -302,6 +327,13 @@ class OrderService {
     }
   }
 
+  /**
+   * Adds handling information to an order in the database.
+   *
+   * @param {number} orderID - The ID of the order.
+   * @param {string} handlingInfo - The handling information to add.
+   * @return {Promise<boolean>} A Promise that resolves to true if the handling info was added successfully, or false otherwise.
+   */
   async addHandlingInfo(orderID, handlingInfo) {
     try {
       if (!orderID || !handlingInfo) {
@@ -311,7 +343,7 @@ class OrderService {
 
       const addedHandlingInfo = await this.database.insertHandlingInfo(
         orderID,
-        handlingInfo
+        handlingInfo,
       );
 
       if (addedHandlingInfo) {
@@ -326,11 +358,20 @@ class OrderService {
     }
   }
 
+  /**
+   * Adds a recipient to an order in the database.
+   *
+   * @param {number} orderID - The ID of the order.
+   * @param {string} firstName - The recipient's first name.
+   * @param {string} lastName - The recipient's last name.
+   * @param {number} addressID - The ID of the recipient's address.
+   * @return {Promise<boolean>} A Promise that resolves to true if the recipient was added successfully, or false otherwise.
+   */
   async addRecipient(orderID, firstName, lastName, addressID) {
     try {
       if (!orderID || !firstName || !lastName || !addressID) {
         logger.error(
-          "OrderID, firstName, lastName or addressID is null or undefined"
+          "OrderID, firstName, lastName or addressID is null or undefined",
         );
         return false;
       }
@@ -339,7 +380,7 @@ class OrderService {
         orderID,
         firstName,
         lastName,
-        addressID
+        addressID,
       );
 
       if (addedRecipient) {
@@ -354,6 +395,12 @@ class OrderService {
     }
   }
 
+  /**
+   * Removes an order from the database.
+   *
+   * @param {number} orderID - The ID of the order to remove.
+   * @return {Promise<boolean>} A Promise that resolves to true if the order was removed successfully, or false otherwise.
+   */
   async removeOrder(orderID) {
     try {
       if (!orderID) {
@@ -375,15 +422,20 @@ class OrderService {
     }
   }
 
+  /**
+   * Removes handling information from an order in the database.
+   *
+   * @param {number} orderID - The ID of the order.
+   * @return {Promise<boolean>} A Promise that resolves to true if the handling information was removed successfully, or false otherwise.
+   */
   async removeHandlingInfo(orderID) {
     try {
       if (!orderID) {
         logger.error("OrderID is null or undefined");
         return false;
       }
-      const removedHandlingInfo = await this.database.deleteHandlingInfo(
-        orderID
-      );
+      const removedHandlingInfo =
+        await this.database.deleteHandlingInfo(orderID);
 
       if (removedHandlingInfo) {
         logger.info("removedHandlingInfo: " + removedHandlingInfo);
@@ -398,6 +450,18 @@ class OrderService {
     }
   }
 
+  /**
+   * Retrieves the ID of an order based on various order details.
+   *
+   * @param {string} timestamp - The order timestamp.
+   * @param {string} employeeName - The employee name associated with the order.
+   * @param {string} packageSize - The package size of the order.
+   * @param {string} deliveryDate - The delivery date of the order.
+   * @param {string} customDropOffPlace - The custom drop-off place for the order.
+   * @param {number} storeID - The ID of the store associated with the order.
+   * @param {number} addressID - The ID of the order's address.
+   * @return {Promise<object|null>} A Promise that resolves to the order ID if found, or null if not found.
+   */
   async getOrderID(
     timestamp,
     employeeName,
@@ -405,7 +469,7 @@ class OrderService {
     deliveryDate,
     customDropOffPlace,
     storeID,
-    addressID
+    addressID,
   ) {
     try {
       if (
@@ -424,7 +488,7 @@ class OrderService {
           deliveryDate,
           customDropOffPlace,
           storeID,
-          addressID
+          addressID,
         );
 
         if (orderID !== null && orderID !== undefined) {

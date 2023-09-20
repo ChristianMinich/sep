@@ -1,12 +1,30 @@
-const geoLocator = require("./geolocatorService");
-const locator = require("./locatorService");
+const Locator = require("./locatorService");
 const logger = require("../utils/logger");
+/**
+ * Service for managing address-related operations.
+ */
 class AddressService {
+  /**
+   * Creates an instance of AddressService.
+   *
+   * @param {object} database - The database instance.
+   */
   constructor(database) {
     this.database = database;
   }
 
-  async newAddAddress(street, houseNumber, zip, zipID, recipient = false) {
+  /**
+   * Adds a new address to the database.
+   *
+   * @param {string} street - The street name.
+   * @param {string} houseNumber - The house number.
+   * @param {string} zip - The ZIP code.
+   * @param {number} zipID - The ZIP code ID.
+   * @param {boolean} [recipient=false] - Indicates if it's a recipient address.
+   * @async
+   * @return {Promise<boolean>} A Promise that resolves to true if the address was added successfully, or false otherwise.
+   */
+  async addAddress(street, houseNumber, zip, zipID, recipient = false) {
     if (!street || !houseNumber || !zip) {
       logger.error("Missing required parameters");
       return false;
@@ -15,20 +33,24 @@ class AddressService {
     const doesAddressExist = await this.database.selectAddressID(
       street,
       houseNumber,
-      zipID
+      zipID,
     );
     if (doesAddressExist !== null && doesAddressExist !== undefined) {
       if (!recipient) {
-        const locatorObject = new locator(houseNumber, street, zip);
+        const locatorObject = new Locator(houseNumber, street, zip);
         const coordinates = await locatorObject.getCoordinates();
-        if (coordinates !== null && coordinates !== undefined && Object.keys(coordinates).length >= 2) {
+        if (
+          coordinates !== null &&
+          coordinates !== undefined &&
+          Object.keys(coordinates).length >= 2
+        ) {
           try {
             const addedAddress = await this.database.insertAddress(
               street,
               houseNumber,
               coordinates.lon,
               coordinates.lat,
-              zipID
+              zipID,
             );
 
             if (addedAddress) {
@@ -48,7 +70,7 @@ class AddressService {
             houseNumber,
             null,
             null,
-            zipID
+            zipID,
           );
           if (addedAddress) {
             return true;
@@ -65,53 +87,15 @@ class AddressService {
     }
   }
 
-  async addAddress(street, houseNumber, zip, zipID) {
-    if (!street || !houseNumber || !zipID) {
-      logger.error("Missing required parameters");
-      return false;
-    }
-
-    try {
-      const coordinates = await geoLocator.getCoordinates(
-        street,
-        houseNumber,
-        zip,
-        "Lingen",
-        "Niedersachsen",
-        "Germany",
-        "de"
-      );
-
-      if (!coordinates || !coordinates[0]) {
-        logger.error("Coordinates could not be retrieved");
-        return false;
-      }
-
-      try {
-        const addedAddress = await this.database.insertAddress(
-          street,
-          houseNumber,
-          coordinates[0].longitude,
-          coordinates[0].latitude,
-          zipID
-        );
-
-        if (addedAddress) {
-          return true;
-        } else {
-          logger.error("Address could not be added");
-          return false;
-        }
-      } catch (error) {
-        logger.error(error);
-        return false;
-      }
-    } catch (error) {
-      logger.error(error);
-      return false;
-    }
-  }
-
+  /**
+   * Retrieves the address ID based on street, house number, and ZIP code ID.
+   *
+   * @param {string} street - The street name.
+   * @param {string} houseNumber - The house number.
+   * @param {number} zipID - The ZIP code ID.
+   * @async
+   * @return {Promise<number|null>} A Promise that resolves to the address ID if found, or null if not found.
+   */
   async getAddressID(street, houseNumber, zipID) {
     console.log("getAddressID: " + street + " " + houseNumber + " " + zipID);
 
@@ -119,7 +103,7 @@ class AddressService {
       const result = await this.database.selectAddressID(
         street,
         houseNumber,
-        zipID
+        zipID,
       );
 
       if (result !== null && result !== undefined) {
@@ -134,7 +118,17 @@ class AddressService {
     }
   }
 
-  async newUpdateAddress(storeID, address) {
+  /**
+   * Updates the address of a store.
+   * @param {string} storeID - The ID of the store to update the address for.
+   * @param {object} address - The new address object containing street, houseNumber, and zip properties.
+   * @param {string} address._street - The street of the new address.
+   * @param {string} address._houseNumber - The house number of the new address.
+   * @param {string} address._zip - The ZIP code of the new address.
+   * @async
+   * @return {Promise<boolean>} A promise that resolves to `true` if the address is updated successfully, or `false` otherwise.
+   */
+  async updateAddress(storeID, address) {
     if (!address) {
       logger.error("Missing required parameters");
       return false;
@@ -146,13 +140,11 @@ class AddressService {
         " " +
         address._houseNumber +
         " " +
-        address._zip
+        address._zip,
     );
 
     try {
-      const currentAddressID = await this.getAddressIDByStoreID(
-        storeID,
-      );
+      const currentAddressID = await this.getAddressIDByStoreID(storeID);
       if (currentAddressID !== null && currentAddressID !== undefined) {
         logger.info("Current AddressID: " + currentAddressID);
         try {
@@ -160,15 +152,15 @@ class AddressService {
           if (newZipID !== null && newZipID !== undefined) {
             logger.info("New ZIPID: " + newZipID);
             try {
-              const locatorObject = new locator(
+              const locatorObject = new Locator(
                 address._houseNumber,
                 address._street,
-                address._zip
+                address._zip,
               );
               const coordinates = await locatorObject.getCoordinates();
               if (coordinates !== null) {
                 logger.info(
-                  "New Coordinates: " + coordinates.lon + " " + coordinates.lat
+                  "New Coordinates: " + coordinates.lon + " " + coordinates.lat,
                 );
                 const updateAddress = await this.database.updateAddress(
                   currentAddressID,
@@ -176,7 +168,7 @@ class AddressService {
                   address._houseNumber,
                   coordinates.lon,
                   coordinates.lat,
-                  newZipID
+                  newZipID,
                 );
                 logger.info("Update Address: " + updateAddress);
                 if (updateAddress) {
@@ -212,48 +204,13 @@ class AddressService {
     }
   }
 
-  async updateAddress(addressID, street, houseNumber, zipID) {
-    try {
-      const coordinates = await geoLocator.getCoordinates(
-        street,
-        houseNumber,
-        "Lingen",
-        "Niedersachsen",
-        "Germany",
-        "de"
-      );
-
-      if (!coordinates || !coordinates[0]) {
-        logger.error("Coordinates could not be retrieved");
-        return false;
-      }
-
-      try {
-        const result = await this.database.updateAddress(
-          addressID,
-          street,
-          houseNumber,
-          coordinates[0].longitude,
-          coordinates[0].latitude,
-          zipID
-        );
-
-        if (result) {
-          return result;
-        } else {
-          logger.error("Address could not be updated");
-          return false;
-        }
-      } catch (error) {
-        logger.error(error);
-        return false;
-      }
-    } catch (error) {
-      logger.error(error);
-      return false;
-    }
-  }
-
+  /**
+   * Retrieves the address ID associated with a store.
+   *
+   * @param {number} storeID - The store ID.
+   * @async
+   * @return {Promise<number|null>} A Promise that resolves to the address ID if found, or null if not found.
+   */
   async getAddressIDByStoreID(storeID) {
     try {
       const result = await this.database.selectAddressIDByStoreID(storeID);
@@ -269,6 +226,13 @@ class AddressService {
     }
   }
 
+  /**
+   * Retrieves the ZIP code ID based on a ZIP code.
+   *
+   * @param {string} zip - The ZIP code.
+   * @async
+   * @return {Promise<number|null>} A Promise that resolves to the ZIP code ID if found, or null if not found.
+   */
   async getZipID(zip) {
     logger.info("Zip " + zip);
     try {

@@ -4,14 +4,13 @@
  * @returns {Boolean}
  */
 function ValidateEmail(email) {
-    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    if(email != null && email.match(mailformat)) {
-        return true;
-    }
-    else{
-        return false;
-    }
+  if (email != null && email.match(mailformat)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 module.exports = { ValidateEmail };

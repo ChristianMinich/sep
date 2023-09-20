@@ -1,7 +1,7 @@
 const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
-const Settings = require("../models/settings_new");
+const Settings = require("../models/settings");
 const Recipient = require("../models/recipient");
 const Address = require("../models/address");
 const logger = require("../utils/logger");
@@ -13,10 +13,20 @@ const logger = require("../utils/logger");
  * @typedef {ApiController}
  */
 class ApiController extends AbstractController {
+  /**
+   * Creates an instance of ApiController.
+   * @constructor
+   */
   constructor() {
     super();
   }
 
+  /**
+   * Handles the order creation and placement based on the provided request and response objects.
+   *
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
+   */
   order(req, res) {
     const token = req.headers.authorization;
 
@@ -70,6 +80,12 @@ class ApiController extends AbstractController {
     }
   }
 
+  /**
+   * Retrieves all orders for a store based on the provided request and response objects.
+   *
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
+   */
   allOrders(req, res) {
     const token = req.headers.authorization;
     logger.info(token);
@@ -96,6 +112,12 @@ class ApiController extends AbstractController {
     }
   }
 
+  /**
+   * Retrieves the settings for a store based on the provided request and response objects.
+   *
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
+   */
   getSettings(req, res) {
     const token = req.headers.authorization;
 
@@ -121,6 +143,12 @@ class ApiController extends AbstractController {
     }
   }
 
+  /**
+   * Set settings for a user.
+   *
+   * @param {Request} req - Express request object.
+   * @param {Response} res - Express response object.
+   */
   setSettings(req, res) {
     const token = req.headers.authorization;
     logger.info(token);
@@ -190,6 +218,12 @@ class ApiController extends AbstractController {
     }
   }
 
+  /**
+   * Updates the settings for a store based on the provided request and response objects.
+   *
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
+   */
   setAddress(req, res) {
     const token = req.headers.authorization;
 
@@ -236,6 +270,12 @@ class ApiController extends AbstractController {
     }
   }
 
+  /**
+   * Retrieves and sends store details as JSON in the response.
+   *
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
+   */
   storeDetails(req, res) {
     try {
       services.storeService

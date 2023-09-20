@@ -1,47 +1,95 @@
 const svc = require("../services");
-class Address{
-    constructor(
-        street,
-        houseNumber,
-        zip,
-    )
-    {
-        this._street = street !== null && street !== undefined && street !== "" ? street : this.throwError("street");
-        this._houseNumber = houseNumber !== null && houseNumber !== undefined && houseNumber !== "" ? houseNumber : this.throwError("houseNumber");
-        this._zip = zip !== null && zip !== undefined && zip !== "" ? zip : this.throwError("zip");
-    }
 
-    throwError(property) {
-        throw new Error(`Missing property ${property}`);
-      }
+/**
+ * Represents an Address.
+ */
+class Address {
+  /**
+   * Creates a new Address instance.
+   * @param {string} street - The street address.
+   * @param {string} houseNumber - The house number.
+   * @param {string} zip - The ZIP code.
+   */
+  constructor(street, houseNumber, zip) {
+    this._street =
+      street !== null && street !== undefined && street !== ""
+        ? street
+        : this.throwError("street");
+    this._houseNumber =
+      houseNumber !== null && houseNumber !== undefined && houseNumber !== ""
+        ? houseNumber
+        : this.throwError("houseNumber");
+    this._zip =
+      zip !== null && zip !== undefined && zip !== ""
+        ? zip
+        : this.throwError("zip");
+  }
 
-    updateAddress(storeID){
-        return svc.addressService.newUpdateAddress(storeID, this);
-    }
+  /**
+   * Throws an error for a missing property.
+   * @param {string} property - The name of the missing property.
+   * @throws {Error} An error indicating the missing property.
+   */
+  throwError(property) {
+    throw new Error(`Missing property ${property}`);
+  }
 
-    get street(){
-        return this._street;
-    }
+  /**
+   * Updates the address for a specific store.
+   * @param {string} storeID - The ID of the store.
+   * @return {Promise<Boolean>} A promise that resolves when the address is updated.
+   */
+  updateAddress(storeID) {
+    return svc.addressService.updateAddress(storeID, this);
+  }
 
-    set street(street){
-        this._street = street;
-    }
+  /**
+   * Get the street address.
+   * @return {string} The street address.
+   */
+  get street() {
+    return this._street;
+  }
 
-    get houseNumber(){
-        return this._houseNumber;
-    }
+  /**
+   * Set the street address.
+   * @param {string} street - The new street address.
+   */
+  set street(street) {
+    this._street = street;
+  }
 
-    set houseNumber(houseNumber){
-        this._houseNumber = houseNumber;
-    }
+  /**
+   * Get the house number.
+   * @return {string} The house number.
+   */
+  get houseNumber() {
+    return this._houseNumber;
+  }
 
-    get zip(){
-        return this._zip;
-    }
+  /**
+   * Set the house number.
+   * @param {string} houseNumber - The new house number.
+   */
+  set houseNumber(houseNumber) {
+    this._houseNumber = houseNumber;
+  }
 
-    set zip(zip){
-        this._zip = zip;
-    }
+  /**
+   * Get the ZIP code.
+   * @return {string} The ZIP code.
+   */
+  get zip() {
+    return this._zip;
+  }
+
+  /**
+   * Set the ZIP code.
+   * @param {string} zip - The new ZIP code.
+   */
+  set zip(zip) {
+    this._zip = zip;
+  }
 }
 
 module.exports = Address;

@@ -17,13 +17,10 @@ class AuthController extends AbstractController {
   }
 
   /**
-   * Login function for the API to authenticate a user and return a JWT token.
-   * @date 8/12/2023 - 11:01:03 PM
+   * Handles user login by validating the provided username and password, generating an access token on success.
    *
-   * @async
-   * @param {*} req
-   * @param {*} res
-   * @returns {JSON}
+   * @param {object} req - The Express.js request object.
+   * @param {object} res - The Express.js response object.
    */
   async login(req, res) {
     try {
@@ -39,7 +36,7 @@ class AuthController extends AbstractController {
 
       const isValidPassword = await services.userService.validatePassword(
         username,
-        password
+        password,
       );
 
       if (isValidPassword) {
@@ -71,13 +68,10 @@ class AuthController extends AbstractController {
   }
 
   /**
-   * Register function for the API to register a new user.
-   * @date 8/12/2023 - 11:02:51 PM
+   * Handles the registration process for a new store, creating a store object and saving it to the database.
    *
-   * @async
-   * @param {*} req
-   * @param {*} res
-   * @returns {*}
+   * @param {object} req - The Express.js request object containing registration data.
+   * @param {object} res - The Express.js response object.
    */
   async register(req, res) {
     try {
@@ -108,7 +102,7 @@ class AuthController extends AbstractController {
         req.body.telephone,
         req.body.email,
         req.body.logo,
-        req.body.backgroundImage
+        req.body.backgroundImage,
       );
 
       try {
@@ -136,6 +130,12 @@ class AuthController extends AbstractController {
     }
   }
 
+  /**
+   * Updates the password for a user based on the provided request and response objects.
+   *
+   * @param {object} req - The Express.js request object containing old and new passwords.
+   * @param {object} res - The Express.js response object.
+   */
   async updatePassword(req, res) {
     const token = req.headers.authorization;
 
@@ -152,7 +152,7 @@ class AuthController extends AbstractController {
           .updatePassword(
             decoded.username,
             req.body.oldPassword,
-            req.body.newPassword
+            req.body.newPassword,
           )
           .then((result) => {
             if (result) {
@@ -177,6 +177,12 @@ class AuthController extends AbstractController {
     }
   }
 
+  /**
+   * Verifies and decodes a JWT token provided in the request headers and sends the decoded payload in the response.
+   *
+   * @param {object} req - The Express.js request object containing the JWT token.
+   * @param {object} res - The Express.js response object.
+   */
   async testToken(req, res) {
     const token = req.headers.authorization;
 
@@ -189,7 +195,7 @@ class AuthController extends AbstractController {
 
     try {
       const decoded = services.userService.getData(
-        token.replace("Bearer ", "")
+        token.replace("Bearer ", ""),
       );
       logger.info("token: " + decoded);
       res.status(200).send(decoded);
@@ -199,6 +205,12 @@ class AuthController extends AbstractController {
     }
   }
 
+  /**
+   * Decodes and retrieves data from a JWT token provided in the request body and sends the decoded payload in the response.
+   *
+   * @param {object} req - The Express.js request object containing the JWT token in the request body.
+   * @param {object} res - The Express.js response object.
+   */
   async tokenData(req, res) {
     try {
       const decoded = services.userService.getData(req.body.token);

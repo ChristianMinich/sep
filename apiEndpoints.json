@@ -1,0 +1,110 @@
+200 -> OK
+400,403 -> CLIENT ERROR
+500 -> SERVER ERROR
+
+404 -> Always not found so -> Wrong Link
+
+<--- AUTH --->
+
+POST 131.173.65.77:8080/auth/login -> CAN RETURN 200, 403 and 500
+{
+	username: "",
+	password: "",
+};
+
+POST 131.173.65.77:8080/auth/register -> CAN RETURN 200, 403 and 500
+{
+	storeName: "",
+	username: "",
+	password: "",
+	owner: "",
+	street: "",
+	houseNumber: "",
+	zip: "",
+	telephone: "",
+	email: "",
+	logo: "",
+	backgroundImage: "",
+};
+
+POST 131.173.65.77:8080/auth/updatePassword -> CAN RETURN 200, 403
+{
+	oldPassword: "",
+	newPassword: "",
+};
+
+<--- API --->
+
+POST 131.173.65.77:8080/api/order -> CAN RETURN 200, 403
+{
+	token: "",
+	timestamp: "",
+	employeeName: "",
+	firstName: "",
+	lastName: "",
+	street: "",
+	houseNumber: "",
+	zip: "",
+	packageSize: "",
+	handlingInfo: "", OPTIONAL
+	deliveryDate: "",
+	customDropOffPlace: "", OPTIONAL
+};
+
+GET 131.173.65.77:8080/api/allOrders -> CAN RETURN 200, 403
+
+GET 131.173.65.77:8080/api/settings -> CAN RETURN 200, 403
+
+RETURNS {
+              token: "",
+              storeName: "",
+              owner: "",
+              address: {
+                street: "",
+                houseNumber: "",
+                zip: "",
+              },
+              telephone: "",
+              email: "",
+              logo: "",
+              backgroundImage: "",
+            };
+
+POST 131.173.65.77:8080/api/settings -> CAN RETURN 200, 403
+{
+    parameter: "",
+    value: ""
+};
+PARAMETERS FOR EXAMPLE TELEPHONE, EMAIL, STORENAME
+ENUM(logo, backgroundImage, password); -> SPECIAL
+
+POST 131.173.65.77:8080/api/setAddress -> CAN RETURN 200, 403
+{
+	address: {
+		street: "",
+		houseNumber: "",
+		zip: "",
+	},
+};
+
+GET 131.173.65.77:8080/api/store-details -> CAN RETURN STATUS 200, 400 and 500
+
+RETURNS {
+    id: "",
+    name: "",
+    owner: "",
+    address: {
+      street: "",
+      houseNumber: "",
+      zip: "",
+      city: "",
+    },
+    telephone: "",
+    email: "",
+    logo: "",
+    backgroundImage: "",
+    coordinates: {
+      latitude: "",
+      longitude: "",
+    },
+  };
