@@ -10,6 +10,7 @@ class Recipient extends AbstractModel {
    * @param {Address} address - The address of the recipient.
    */
   constructor(firstName, lastName, address) {
+    super();
     this._firstName =
       firstName !== null && firstName !== undefined
         ? firstName

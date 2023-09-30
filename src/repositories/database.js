@@ -9,6 +9,12 @@ class Database {
    * Creates an instance of the Database class and initializes the connection pool.
    */
   constructor() {
+    console.log("Initializing database connection pool...");
+    console.log("host: " + process.env.host
+    + " user: " + process.env.user
+    + " password: " + process.env.password
+    + " database: " + process.env.database
+    + " connectionLimit: " + process.env.connectionLimit);
     this.pool = mariadb.createPool({
       host: process.env.host,
       user: process.env.user,

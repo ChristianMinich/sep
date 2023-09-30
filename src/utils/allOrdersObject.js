@@ -19,7 +19,7 @@ function createObject(order) {
     },
     packageSize: order.packageSize,
     handlingInfo: order.handlingInfo,
-    deliveryDate: order.deliveryDate,
+    deliveryDate: String(order.deliveryDate).substring(0, 10),
     customDropOffPlace: order.customDropOffPlace,
   };
 }

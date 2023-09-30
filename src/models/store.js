@@ -28,6 +28,7 @@ class Store extends AbstractModel {
     logo,
     backgroundImage
   ) {
+    super();
     this._storeName =
       storeName !== null && storeName !== undefined
         ? storeName

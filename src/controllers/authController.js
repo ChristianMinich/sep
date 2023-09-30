@@ -96,7 +96,7 @@ class AuthController {
 
         console.log(response);
 
-        if (response === "Store added") {
+        if (response.response === "Store added") {
           logger.info("Store added");
           res.status(200).send("Store added");
         } else {

@@ -23,7 +23,7 @@ class OrderService {
    * @param {object} order - The order data.
    * @return {Promise<object>} A Promise that resolves to an object with a response and orderID.
    */
-  async addOrder(order) {
+  async addOrder(order, storeName) {
     logger.info("order " + order);
     logger.info("order._recipient " + order._recipient);
     logger.info("order._recipient._address " + order._recipient._address);
@@ -55,7 +55,8 @@ class OrderService {
         !order._deliveryDate ||
         !order._storeID ||
         !order._recipient._firstName ||
-        !order._recipient._lastName
+        !order._recipient._lastName ||
+        !storeName
       ) {
         logger.error("Order or storeID is null or undefined");
         return {
@@ -120,7 +121,7 @@ class OrderService {
         console.log("addressID: " + addressID + " ADDRESS EXISTS");
       }
 
-      const response = await this.addingOrder(order, addressID);
+      const response = await this.addingOrder(order, addressID, storeName);
       return response;
     } catch (error) {
       logger.error(error);
@@ -137,7 +138,7 @@ class OrderService {
    * @param {number} addressID - The ID of the address associated with the order.
    * @return {Object} - An object with a response indicating the result of the operation.
    */
-  async addingOrder(order, addressID) {
+  async addingOrder(order, addressID, storeName) {
     try {
       const addedOrder = await this.database.insertOrder(
         order._timestamp,
@@ -255,7 +256,7 @@ class OrderService {
         storeID: order._storeID,
         orderID: orderID.orderID,
         timestamp: order._timestamp,
-        employeeName: order._employeeName ? order._employeeName : " ",
+        employeeName: order._employeeName || order._employeeName !== " " ? order._employeeName: null,
         firstName: order._recipient._firstName,
         lastName: order._recipient._lastName,
         street: order._recipient._address._street,
@@ -265,20 +266,27 @@ class OrderService {
         deliveryDate: order._deliveryDate,
         customDropOffPlace: order._customDropOffPlace
           ? order._customDropOffPlace
-          : " ",
-        handlingInfo: order._handlingInfo ? order._handlingInfo : " ",
+          : null,
+        handlingInfo: order._handlingInfo ? String(order._handlingInfo).replace(/&/g, ', ') : null,
+        storeName: storeName,
       };
 
       try {
         emailSender.sendOrderEmail(orderEmail, order._email);
-
-        return {
-          response: "Order successfully added",
-          orderID: orderID.orderID,
-        };
+        try {
+          emailSender.sendLWTEmail(orderEmail);
+          return {
+            response: "Order successfully added",
+            orderID: orderID.orderID,
+          };
+        } catch (error) {
+          return {
+            response: "Error sending LWT email",
+          };
+        }
       } catch (error) {
         return {
-          response: "Error sending email",
+          response: "Error sending Seller email",
         };
       }
     } catch (error) {

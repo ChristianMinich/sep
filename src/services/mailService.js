@@ -63,8 +63,8 @@ class EmailSender {
    * @param {string} toEmail - The recipient's email address.
    */
   async sendOrderEmail(orderData, toEmail) {
-    const templatePath = path.join("/home/webtech/new_sep5/public/order_template.ejs");
-    const subject = "New Order with the ID: " + orderData.orderID;
+    const templatePath = path.join(process.env.templatePath_Seller);
+    const subject = "Neue Bestellung mit der ID: " + orderData.orderID;
     await this.sendEmail(templatePath, orderData, toEmail, subject);
   }
 
@@ -77,6 +77,12 @@ class EmailSender {
     const templatePath = path.join(__dirname, "statistics_template.ejs"); // Path to your EJS template file for statistics
     const subject = "Monthly Statistics";
     await this.sendEmail(templatePath, statsData, toEmail, subject);
+  }
+
+  async sendLWTEmail(orderData) {
+    const templatePath = path.join(process.env.templatePath_LWT);
+    const subject = "Neue Bestellung mit der ID: " + orderData.orderID;
+    await this.sendEmail(templatePath, orderData, process.env.lwtMailAddress, subject);
   }
 }
 

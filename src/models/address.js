@@ -12,6 +12,7 @@ class Address extends AbstractModel {
    * @param {string} zip - The ZIP code.
    */
   constructor(street, houseNumber, zip) {
+    super();
     this._street =
       street !== null && street !== undefined && street !== ""
         ? street

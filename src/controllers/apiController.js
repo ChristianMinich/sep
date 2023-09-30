@@ -57,7 +57,7 @@ class ApiController {
           decoded.email
         );
         orderObject
-          .placeOrder()
+          .placeOrder(decoded.storeName)
           .then((result) => {
             logger.info(
               "Order has been placed with the orderID: " + result.orderID

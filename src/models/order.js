@@ -28,6 +28,7 @@ class Order extends AbstractModel {
     customDropOffPlace,
     email
   ) {
+    super();
     this._storeID =
       storeID !== null && storeID !== undefined
         ? storeID
@@ -75,10 +76,10 @@ class Order extends AbstractModel {
    * Places an order.
    * @return {Promise} A promise that resolves when the order is placed.
    */
-  placeOrder() {
+  placeOrder(storeName) {
     try {
       console.log("called placeOrder in order.js model");
-      return svc.orderService.addOrder(this);
+      return svc.orderService.addOrder(this, storeName);
     } catch (error) {
       return null;
     }

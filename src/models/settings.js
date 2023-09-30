@@ -12,6 +12,7 @@ class Settings extends AbstractModel {
    * @param {string} value - The value of the setting.
    */
   constructor(storeID, parameter, value) {
+    super();
     this._storeID =
       storeID !== null && storeID !== undefined && storeID !== ""
         ? storeID

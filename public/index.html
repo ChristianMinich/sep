@@ -17,7 +17,13 @@
                 <td><img src="http://131.173.65.77:8080/Images/LingenLiefert-Logo.jpg" alt="LingenLiefert Logo" class="img-fluid"></td>
             </tr>
             <tr>
-                <td><button class="btn btn-primary mt-3" onclick="createStore()">Create Store</button></td>
+                <td><button class="btn btn-primary mt-3 btn-lg" onclick="createStore()">Create Store</button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-primary mt-3 btn-lg" onclick="login()">Login</button></td>
+            </tr>
+            <tr>
+                <td><button class="btn btn-primary mt-3 btn-lg" onclick="storeDetails()">Store Details</button></td>
             </tr>
         </table>
     </div>
@@ -27,6 +33,20 @@
          */
         function createStore() {
             window.location.href = "/createStore";
+        }
+
+        /**
+         * Function to go to the "login" page
+         */
+        function login(){
+            window.location.href = "/admin/login";
+        }
+
+        /**
+         * Function to go to the "store details" page
+         */
+        function storeDetails(){
+            window.location.href = "/api/store-details";
         }
     </script>
 
