@@ -1,24 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>New Order</title>
+    <title>New Order</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css">
 </head>
+<style>
+    body {
+        background-color: #ffffff;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    strong {
+        font-weight: bold;
+    }
+</style>
 <body>
-  <h2>New Order Details</h2>
-  <p><strong>Store ID:</strong> <%= storeID %></p>
-  <p><strong>Timestamp:</strong> <%= timestamp %></p>
-  <p><strong>Employee Name:</strong> <%= employeeName %></p>
-  <p><strong>Customer Name:</strong> <%= firstName %> <%= lastName %></p>
-  <p><strong>Delivery Address:</strong><br>
-    <%= street %> <%= houseNumber %><br>
-    <%= zip %></p>
-  <p><strong>Package Size:</strong> <%= packageSize %></p>
-  <% if (handlingInfo) { %>
-    <p><strong>Handling Information:</strong> <%= handlingInfo %></p>
-  <% } %>
-  <p><strong>Delivery Date:</strong> <%= deliveryDate %></p>
-  <% if (customDropOffPlace) { %>
-    <p><strong>Custom Drop-off Place:</strong> <%= customDropOffPlace %></p>
-  <% } %>
+    <div class="container">
+        <h2>New Order Details</h2>
+        <p><strong>Store ID:</strong> <%= storeID %></p>
+        <p><strong>Timestamp:</strong> <%= timestamp %></p>
+        <p><strong>Employee Name:</strong> <%= employeeName %></p>
+        <p><strong>Customer Name:</strong> <%= firstName %> <%= lastName %></p>
+        <p><strong>Delivery Address:</strong></p>
+        <address>
+            <%= street %> <%= houseNumber %><br>
+            <%= zip %>
+        </address>
+        <p><strong>Package Size:</strong> <%= packageSize %></p>
+        <% if (handlingInfo) { %>
+            <p><strong>Handling Information:</strong> <%= handlingInfo %></p>
+        <% } %>
+        <p><strong>Delivery Date:</strong> <%= deliveryDate %></p>
+        <% if (customDropOffPlace) { %>
+            <p><strong>Custom Drop-off Place:</strong> <%= customDropOffPlace %></p>
+        <% } %>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
