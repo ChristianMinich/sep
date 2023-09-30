@@ -7,7 +7,7 @@ const path = require("path");
  * @typedef {AdminController}
  * @date 8/12/2023 - 11:04:36 PM
  */
-class AdminController extends AbstractController {
+class AdminController {
   /**
    * Creates an instance of AdminController.
    * @constructor

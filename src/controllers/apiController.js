@@ -12,7 +12,7 @@ const logger = require("../utils/logger");
  * @class ApiController
  * @typedef {ApiController}
  */
-class ApiController extends AbstractController {
+class ApiController {
   /**
    * Creates an instance of ApiController.
    * @constructor

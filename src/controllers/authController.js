@@ -10,7 +10,7 @@ const Address = require("../models/address");
  * @class AuthController
  * @typedef {AuthController}
  */
-class AuthController extends AbstractController {
+class AuthController {
   /**
    * Creates an instance of AuthController.
    * @date 9/21/2023 - 2:26:30 PM
