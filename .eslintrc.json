@@ -1,17 +1,21 @@
 {
-    "env": {
-      "browser": true,
-      "commonjs": true,
-      "es2021": true
-    },
-    "extends": ["google", "prettier"],
-    "overrides": [],
-    "parserOptions": {
-      "ecmaVersion": "latest"
-    },
-    "rules": {
-      "prettier/prettier": "error"
-    },
-    "plugins": ["prettier"]
-  }
-  
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": ["google", "prettier"],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "none"
+      }
+    ]
+  },
+  "plugins": ["prettier"]
+}
