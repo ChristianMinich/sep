@@ -10,10 +10,10 @@ class Database {
    */
   constructor() {
     this.pool = mariadb.createPool({
-      host: "127.0.0.1", // process.env.host
-      user: "sep23", // process.env.user
-      password: "lingenliefert", // process.env.password
-      database: "LINGENLIEFERT", // process.env.database
+      host: process.env.host,
+      user: process.env.user,
+      password: process.env.password,
+      database: process.env.database,
       connectionLimit: 50
     });
   }
