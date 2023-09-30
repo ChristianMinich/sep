@@ -22,5 +22,5 @@ const userRepositoryObject = new UserRepository(baseRepositoryObject);
 module.exports = {
   baseRepository: baseRepositoryObject,
   orderRepository: orderRepositoryObject,
-  userRepository: userRepositoryObject,
+  userRepository: userRepositoryObject
 };

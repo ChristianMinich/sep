@@ -28,14 +28,14 @@ class OrderService {
     logger.info("order._recipient " + order._recipient);
     logger.info("order._recipient._address " + order._recipient._address);
     logger.info(
-      "order._recipient._address._zip " + order._recipient._address._zip,
+      "order._recipient._address._zip " + order._recipient._address._zip
     );
     logger.info(
-      "order._recipient._address._street " + order._recipient._address._street,
+      "order._recipient._address._street " + order._recipient._address._street
     );
     logger.info(
       "order._recipient._address._houseNumber " +
-        order._recipient._address._houseNumber,
+        order._recipient._address._houseNumber
     );
     logger.info("order._timestamp " + order._timestamp);
     logger.info("order._packageSize " + order._packageSize);
@@ -64,7 +64,7 @@ class OrderService {
       }
 
       const zipID = await this.addressService.getZipID(
-        order._recipient._address._zip,
+        order._recipient._address._zip
       );
       if (zipID === null || zipID === undefined) {
         logger.error("zipID: " + zipID + " ZIP DOES NOT EXIST");
@@ -78,10 +78,10 @@ class OrderService {
       let addressID = await this.addressService.getAddressID(
         order._recipient._address._street,
         order._recipient._address._houseNumber,
-        zipID,
+        zipID
       );
       if (addressID === null || addressID === undefined) {
-        console.log("addressID: " + addressID + " ADRESS DOES NOT EXIST");
+        console.log("addressID: " + addressID + " ADDRESS DOES NOT EXIST");
         if (order._recipient._address._houseNumber.length <= 5) {
           console.log("adding Address");
           const addedAddress = await this.addressService.addAddress(
@@ -89,7 +89,7 @@ class OrderService {
             order._recipient._address._houseNumber,
             order._recipient._address._zip,
             zipID,
-            true,
+            true
           );
           if (!addedAddress) {
             logger.error("Address could not be added");
@@ -101,7 +101,7 @@ class OrderService {
           addressID = await this.addressService.getAddressID(
             order._recipient._address._street,
             order._recipient._address._houseNumber,
-            zipID,
+            zipID
           );
           if (addressID === null || addressID === undefined) {
             logger.error("AddressID could not be retrieved");
@@ -146,7 +146,7 @@ class OrderService {
         order._deliveryDate,
         order._customDropOffPlace ? order._customDropOffPlace : " ",
         order._storeID,
-        addressID,
+        addressID
       );
 
       if (!addedOrder) {
@@ -164,7 +164,7 @@ class OrderService {
         order._deliveryDate,
         order._customDropOffPlace ? order._customDropOffPlace : " ",
         order._storeID,
-        addressID,
+        addressID
       );
 
       if (orderID === null || orderID === undefined) {
@@ -176,7 +176,7 @@ class OrderService {
 
       const addedHandlingInfo = this.addHandlingInfo(
         orderID.orderID,
-        order._handlingInfo ? order._handlingInfo : " ",
+        order._handlingInfo ? order._handlingInfo : " "
       );
 
       if (!addedHandlingInfo) {
@@ -206,7 +206,7 @@ class OrderService {
         orderID.orderID,
         order._recipient._firstName,
         order._recipient._lastName,
-        addressID,
+        addressID
       );
 
       if (!addedRecipient) {
@@ -218,7 +218,7 @@ class OrderService {
             logger.info("Order removed");
             try {
               const removedHandlingInfo = await this.removeHandlingInfo(
-                orderID.orderID,
+                orderID.orderID
               );
               if (removedHandlingInfo) {
                 logger.info("HandlingInfo removed");
@@ -343,7 +343,7 @@ class OrderService {
 
       const addedHandlingInfo = await this.database.insertHandlingInfo(
         orderID,
-        handlingInfo,
+        handlingInfo
       );
 
       if (addedHandlingInfo) {
@@ -371,7 +371,7 @@ class OrderService {
     try {
       if (!orderID || !firstName || !lastName || !addressID) {
         logger.error(
-          "OrderID, firstName, lastName or addressID is null or undefined",
+          "OrderID, firstName, lastName or addressID is null or undefined"
         );
         return false;
       }
@@ -380,7 +380,7 @@ class OrderService {
         orderID,
         firstName,
         lastName,
-        addressID,
+        addressID
       );
 
       if (addedRecipient) {
@@ -469,7 +469,7 @@ class OrderService {
     deliveryDate,
     customDropOffPlace,
     storeID,
-    addressID,
+    addressID
   ) {
     try {
       if (
@@ -488,7 +488,7 @@ class OrderService {
           deliveryDate,
           customDropOffPlace,
           storeID,
-          addressID,
+          addressID
         );
 
         if (orderID !== null && orderID !== undefined) {

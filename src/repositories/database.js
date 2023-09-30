@@ -14,7 +14,7 @@ class Database {
       user: "sep23", // process.env.user
       password: "lingenliefert", // process.env.password
       database: "LINGENLIEFERT", // process.env.database
-      connectionLimit: 50,
+      connectionLimit: 50
     });
   }
 

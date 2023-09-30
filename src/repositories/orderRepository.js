@@ -81,7 +81,7 @@ class OrderRepository extends AbstractRepository {
     deliveryDate,
     customDropoffPlace,
     storeID,
-    addressID,
+    addressID
   ) {
     const sql = `
     INSERT INTO
@@ -96,7 +96,7 @@ class OrderRepository extends AbstractRepository {
       deliveryDate,
       customDropoffPlace,
       storeID,
-      addressID,
+      addressID
     ];
     return this.database.insertTuple(sql, params);
   }
@@ -158,7 +158,7 @@ class OrderRepository extends AbstractRepository {
     deliveryDate,
     customDropoffPlace,
     storeID,
-    addressID,
+    addressID
   ) {
     const sql = `
     SELECT 
@@ -187,7 +187,7 @@ class OrderRepository extends AbstractRepository {
       deliveryDate,
       customDropoffPlace,
       storeID,
-      addressID,
+      addressID
     ];
     return this.database.queryOneDataSet(sql, params);
   }

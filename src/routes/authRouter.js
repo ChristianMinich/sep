@@ -39,7 +39,7 @@ class AuthRouter extends AbstractRouter {
      */
     this.router.post(
       "/updatePassword",
-      controller.AuthController.updatePassword,
+      controller.AuthController.updatePassword
     );
 
     /**

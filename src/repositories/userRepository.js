@@ -178,7 +178,7 @@ class UserRepository extends AbstractRepository {
       email,
       zipID,
       addressID,
-      username,
+      username
     ];
     return this.database.queryWithoutResponse(sql, params);
   }
@@ -382,7 +382,7 @@ class UserRepository extends AbstractRepository {
       email,
       zipID,
       addressID,
-      storeID,
+      storeID
     ];
     return this.database.updateTable(sql, params);
   }

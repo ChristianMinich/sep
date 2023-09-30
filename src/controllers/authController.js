@@ -1,5 +1,4 @@
 const AbstractController = require("./abstractController");
-const bcrypt = require("bcrypt");
 const Store = require("../models/store");
 const services = require("../services");
 const logger = require("../utils/logger");
@@ -12,6 +11,12 @@ const Address = require("../models/address");
  * @typedef {AuthController}
  */
 class AuthController extends AbstractController {
+  /**
+   * Creates an instance of AuthController.
+   * @date 9/21/2023 - 2:26:30 PM
+   *
+   * @constructor
+   */
   constructor() {
     super();
   }
@@ -36,7 +41,7 @@ class AuthController extends AbstractController {
 
       const isValidPassword = await services.userService.validatePassword(
         username,
-        password,
+        password
       );
 
       if (isValidPassword) {
@@ -75,24 +80,6 @@ class AuthController extends AbstractController {
    */
   async register(req, res) {
     try {
-      //if (svc.validateRegisterCode(req.body.code)) {
-      /*
-      console.log(req.body);
-      if (true) {
-        const hashedPassword = await new Promise((resolve, reject) => {
-          bcrypt.hash(req.body.password, 10, (err, hash) => {
-            if (err) {
-              reject("Error hashing password");
-            } else {
-              resolve(hash);
-            }
-          });
-        }); */
-
-      //req.body.password = hashedPassword;
-
-      //!svc.doesStoreExist(req.body.STORE_NAME)
-
       const newStore = new Store(
         req.body.storeName,
         req.body.username,
@@ -102,7 +89,7 @@ class AuthController extends AbstractController {
         req.body.telephone,
         req.body.email,
         req.body.logo,
-        req.body.backgroundImage,
+        req.body.backgroundImage
       );
 
       try {
@@ -121,9 +108,6 @@ class AuthController extends AbstractController {
         logger.error(error);
         res.status(500).send("Error creating store!");
       }
-      /*} else {
-        res.status(403).send("Invalid register code!");
-      }*/
     } catch (error) {
       logger.error(error);
       res.status(500).send("An error occurred during registration");
@@ -152,7 +136,7 @@ class AuthController extends AbstractController {
           .updatePassword(
             decoded.username,
             req.body.oldPassword,
-            req.body.newPassword,
+            req.body.newPassword
           )
           .then((result) => {
             if (result) {
@@ -195,7 +179,7 @@ class AuthController extends AbstractController {
 
     try {
       const decoded = services.userService.getData(
-        token.replace("Bearer ", ""),
+        token.replace("Bearer ", "")
       );
       logger.info("token: " + decoded);
       res.status(200).send(decoded);

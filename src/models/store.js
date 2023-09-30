@@ -15,7 +15,6 @@ class Store {
    * @param {string} email - The email address of the store.
    * @param {string} logo - The logo of the store (defaulted to "defaultLogo.png" if not provided).
    * @param {string} backgroundImage - The background image of the store.
-   * @return {void}
    */
   constructor(
     storeName,
@@ -26,7 +25,7 @@ class Store {
     telephone,
     email,
     logo,
-    backgroundImage,
+    backgroundImage
   ) {
     this._storeName =
       storeName !== null && storeName !== undefined

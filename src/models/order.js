@@ -6,10 +6,10 @@ const svc = require("../services");
 class Order {
   /**
    * Creates a new Order instance.
-   * @param {string} storeID - The ID of the store.
+   * @param {number} storeID - The ID of the store.
    * @param {string} timestamp - The timestamp of the order.
    * @param {string} employeeName - The name of the employee.
-   * @param {string} recipient - The name of the recipient.
+   * @param {Recipient} recipient - The name of the recipient.
    * @param {string} packageSize - The size of the package.
    * @param {string} handlingInfo - Information about package handling.
    * @param {string} deliveryDate - The delivery date of the order.
@@ -25,7 +25,7 @@ class Order {
     handlingInfo,
     deliveryDate,
     customDropOffPlace,
-    email,
+    email
   ) {
     this._storeID =
       storeID !== null && storeID !== undefined

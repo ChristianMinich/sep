@@ -33,7 +33,7 @@ class AddressService {
     const doesAddressExist = await this.database.selectAddressID(
       street,
       houseNumber,
-      zipID,
+      zipID
     );
     if (doesAddressExist !== null && doesAddressExist !== undefined) {
       if (!recipient) {
@@ -50,7 +50,7 @@ class AddressService {
               houseNumber,
               coordinates.lon,
               coordinates.lat,
-              zipID,
+              zipID
             );
 
             if (addedAddress) {
@@ -70,7 +70,7 @@ class AddressService {
             houseNumber,
             null,
             null,
-            zipID,
+            zipID
           );
           if (addedAddress) {
             return true;
@@ -103,7 +103,7 @@ class AddressService {
       const result = await this.database.selectAddressID(
         street,
         houseNumber,
-        zipID,
+        zipID
       );
 
       if (result !== null && result !== undefined) {
@@ -140,7 +140,7 @@ class AddressService {
         " " +
         address._houseNumber +
         " " +
-        address._zip,
+        address._zip
     );
 
     try {
@@ -155,12 +155,12 @@ class AddressService {
               const locatorObject = new Locator(
                 address._houseNumber,
                 address._street,
-                address._zip,
+                address._zip
               );
               const coordinates = await locatorObject.getCoordinates();
               if (coordinates !== null) {
                 logger.info(
-                  "New Coordinates: " + coordinates.lon + " " + coordinates.lat,
+                  "New Coordinates: " + coordinates.lon + " " + coordinates.lat
                 );
                 const updateAddress = await this.database.updateAddress(
                   currentAddressID,
@@ -168,7 +168,7 @@ class AddressService {
                   address._houseNumber,
                   coordinates.lon,
                   coordinates.lat,
-                  newZipID,
+                  newZipID
                 );
                 logger.info("Update Address: " + updateAddress);
                 if (updateAddress) {

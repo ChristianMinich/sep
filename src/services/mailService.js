@@ -25,8 +25,8 @@ class EmailSender {
         user: "seplingenliefert@gmail.com",
         clientId: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        accessToken: process.env.accessToken,
-      },
+        accessToken: process.env.accessToken
+      }
     });
   }
 

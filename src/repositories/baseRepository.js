@@ -51,7 +51,7 @@ class BaseRepository extends AbstractRepository {
    */
   queryOneDataSet(sql, params) {
     return this.query(sql, params).then((result) =>
-      result.length !== 0 ? result[0] : false,
+      result.length !== 0 ? result[0] : false
     );
   }
 
@@ -63,7 +63,7 @@ class BaseRepository extends AbstractRepository {
    */
   queryAllData(sql, params) {
     return this.query(sql, params).then((result) =>
-      result.length !== 0 ? result : false,
+      result.length !== 0 ? result : false
     );
   }
 

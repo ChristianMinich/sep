@@ -1,5 +1,5 @@
 /**
- * Class for geolocating coordinates based on an address using the Nominatim service.
+ * Class for geolocating coordinates based on an address using the OSM service.
  */
 class GeoLocator {
   /**
