@@ -1,4 +1,3 @@
-const AbstractController = require("./abstractController");
 const services = require("../services");
 const Order = require("../models/order");
 const Settings = require("../models/settings");
