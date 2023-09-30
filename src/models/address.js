@@ -1,9 +1,10 @@
+const AbstractModel = require("./abstractModel");
 const svc = require("../services");
 
 /**
  * Represents an Address.
  */
-class Address {
+class Address extends AbstractModel {
   /**
    * Creates a new Address instance.
    * @param {string} street - The street address.

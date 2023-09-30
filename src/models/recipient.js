@@ -1,7 +1,8 @@
+const AbstractModel = require("./abstractModel");
 /**
  * Represents a recipient.
  */
-class Recipient {
+class Recipient extends AbstractModel {
   /**
    * Creates a new Recipient instance.
    * @param {string} firstName - The first name of the recipient.

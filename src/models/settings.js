@@ -1,9 +1,10 @@
+const AbstractModel = require("./abstractModel");
 const svc = require("../services");
 
 /**
  * Represents settings for a store.
  */
-class Settings {
+class Settings extends AbstractModel {
   /**
    * Creates a new Settings instance.
    * @param {string} storeID - The ID of the store.

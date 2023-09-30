@@ -1,9 +1,10 @@
+const AbstractModel = require("./abstractModel");
 const svc = require("../services");
 
 /**
  * Represents an Order.
  */
-class Order {
+class Order extends AbstractModel {
   /**
    * Creates a new Order instance.
    * @param {number} storeID - The ID of the store.
