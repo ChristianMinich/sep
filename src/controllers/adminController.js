@@ -12,7 +12,7 @@ class AdminController {
    * @constructor
    */
   constructor() {
-    super();
+    /** Constructor */
   }
 
   /**

@@ -17,7 +17,7 @@ class ApiController {
    * @constructor
    */
   constructor() {
-    super();
+    /** Constructor */
   }
 
   /**

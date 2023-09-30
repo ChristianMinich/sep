@@ -17,7 +17,7 @@ class AuthController {
    * @constructor
    */
   constructor() {
-    super();
+    /** Constructor */
   }
 
   /**
