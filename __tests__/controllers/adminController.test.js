@@ -1,60 +1,63 @@
-const adminController = require('../../src/controllers/adminController');
+const AdminController = require('../../src/controllers/adminController');
 const path = require('path');
-
-// Create mock Express request and response objects
-const { mockRequest, mockResponse } = require('express');
+const express = require('express');
+const { Request, Response } = express;
 
 describe('AdminController', () => {
-  describe('index', () => {
-    it('should send index HTML file as a response', () => {
-      const req = new Request({"hello": "world"});
-      const res = new Response();
+  let adminController;
 
-      adminController.index(req, res);
-
-      // Assert that the status code is set to 200
-      expect(res.status).toHaveBeenCalledWith(200);
-
-      // Assert that sendFile is called with the correct file path
-      expect(res.sendFile).toHaveBeenCalledWith(path.resolve('public/index.html'));
-    });
-
-    // Add more test cases for different scenarios
+  beforeAll(() => {
+    adminController = AdminController;
   });
 
-  describe('createStore', () => {
-    // Write test cases for the `createStore` method
+  it('should send index.html', () => {
+    const req = {};
+    const res = {
+      status: jest.fn(() => res),
+      sendFile: jest.fn(),
+    };;
+    const sendFileMock = jest.fn();
+    res.status = jest.fn(() => res);
+    res.sendFile = sendFileMock;
+
+    adminController.index(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(sendFileMock).toHaveBeenCalledWith(path.join(__dirname, '../../public/index.html'));
   });
 
-  describe('storeDetails', () => {
-    // Write test cases for the `storeDetails` method
+  it('should send createStore.html', () => {
+    const req = {};
+    const res = {
+      status: jest.fn(() => res),
+      sendFile: jest.fn(),
+    };;
+    const sendFileMock = jest.fn();
+    res.status = jest.fn(() => res);
+    res.sendFile = sendFileMock;
+
+    adminController.createStore(req, res); // Use createStore here
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(sendFileMock).toHaveBeenCalledWith(path.join(__dirname, '../../public/createStore.html'));
   });
 
-  describe('allOrders', () => {
-    // Write test cases for the `allOrders` method
+  it('should send storeDetails.html', () => {
+    const req = {};
+    const res = {
+      status: jest.fn(() => res),
+      sendFile: jest.fn(),
+    };
+    const sendFileMock = jest.fn();
+    res.status = jest.fn(() => res);
+    res.sendFile = sendFileMock;
+
+    adminController.storeDetails(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(sendFileMock).toHaveBeenCalledWith(path.join(__dirname, '../../public/storeDetails.html'));
   });
 
-  describe('placeOrder', () => {
-    // Write test cases for the `placeOrder` method
-  });
 
-  describe('login', () => {
-    // Write test cases for the `login` method
-  });
-
-  describe('getSettings', () => {
-    // Write test cases for the `getSettings` method
-  });
-
-  describe('setSettings', () => {
-    // Write test cases for the `setSettings` method
-  });
-
-  describe('setAddress', () => {
-    // Write test cases for the `setAddress` method
-  });
-
-  describe('tokenData', () => {
-    // Write test cases for the `tokenData` method
-  });
+  // Repeat similar changes for other test cases
 });
