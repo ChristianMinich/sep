@@ -1,4 +1,4 @@
-/*const AddressService = require("../../src/services/addressService");
+const AddressService = require("../../src/services/addressService");
 const { UserRepository } = require("../../src/repositories/userRepository");
 
 const mockLocator = {
@@ -30,7 +30,7 @@ describe("AddressService", () => {
     jest.clearAllMocks(); // Clear all mock calls after each test
   });
 
-  it('should add an address with coordinates when recipient is not specified and address does not exist', async () => {
+  test('should add an address with coordinates when recipient is not specified and address does not exist', async () => {
     // Arrange
     const street = 'Test Street';
     const houseNumber = '123';
@@ -89,4 +89,4 @@ describe("AddressService", () => {
 
     // You can also add assertions for logging here if needed
   });
-});*/
+});
