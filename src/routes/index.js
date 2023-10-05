@@ -3,6 +3,8 @@ const router = new express.Router();
 const adminRouter = require("./adminRouter");
 const apiRouter = require("./apiRouter");
 const authRouter = require("./authRouter");
+const storeDetailsController = require("../controllers/storeDetailsController");
+const mw = require("../middlewares");
 
 /**
  * Express router for managing various routes.
@@ -10,6 +12,8 @@ const authRouter = require("./authRouter");
  */
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
+
+router.get("/storeDetails", storeDetailsController.storeDetails);
 
 /**
  * Mounts the admin router under the "/admin" path.
@@ -25,7 +29,7 @@ router.use("/admin", adminRouter);
  * @name apiRouter
  * @type {express.Router}
  */
-router.use("/api", apiRouter);
+router.use("/api", mw.authenticateToken, apiRouter);
 
 /**
  * Mounts the authentication router under the "/auth" path.
