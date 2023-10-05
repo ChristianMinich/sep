@@ -1,4 +1,4 @@
-const svc = require("../services/userService");
+const services = require("../services");
 const logger = require("../utils/logger");
 function authenticateToken(req, res, next) {
   const accessToken = req.headers.authorization;
@@ -9,7 +9,7 @@ function authenticateToken(req, res, next) {
   }
 
   try {
-    const decoded = svc.getData();
+    const decoded = services.userService.getData(accessToken);
     req.decoded = decoded;
     logger.info(decoded);
     next();

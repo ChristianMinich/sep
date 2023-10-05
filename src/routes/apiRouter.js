@@ -53,12 +53,6 @@ class ApiRouter extends AbstractRouter {
      */
     this.router.post("/setAddress", controller.ApiController.setAddress);
 
-    /**
-     * Route for retrieving store details.
-     * @name GET /api/store-details
-     * @function
-     */
-    this.router.get("/store-details", controller.ApiController.storeDetails);
   }
 }
 
