@@ -73,7 +73,7 @@ class StoreService {
    * Adds a new store to the database.
    * @async
    * @param {*} store - The store object to be added.
-   * @returns {Object} - An object with a response indicating the result of the operation.
+   * @return {Object} - An object with a response indicating the result of the operation.
    */
   async addStore(store) {
     if (!store) {
@@ -201,7 +201,7 @@ class StoreService {
    * Checks if a store with the given name exists in the database.
    *
    * @param {string} storeName - The name of the store to check for existence.
-   * @returns {Promise<boolean>} A promise that resolves to `true` if the store exists,
+   * @return {Promise<boolean>} A promise that resolves to `true` if the store exists,
    *                            or `false` if it doesn't.
    * @throws {Error} If an error occurs while checking the store's existence.
    */
@@ -219,7 +219,7 @@ class StoreService {
    * Gets the settings of a store by its storeID.
    * @async
    * @param {*} storeID - The ID of the store.
-   * @returns {Object} - An object containing store settings.
+   * @return {Object} - An object containing store settings.
    */
   async getSettings(storeID) {
     try {
@@ -285,7 +285,7 @@ class StoreService {
    * Updates the settings of a store.
    * @async
    * @param {Object} settings - The updated store settings.
-   * @returns {boolean} - True if the settings were successfully updated, false otherwise.
+   * @return {boolean} - True if the settings were successfully updated, false otherwise.
    */
   async setSettings(settings) {
     try {
@@ -347,7 +347,7 @@ class StoreService {
    * Updates specific parameters of a store.
    * @async
    * @param {Object} settings - The updated store parameters.
-   * @returns {boolean|string} - True if the parameters were successfully updated, false otherwise. Returns "invalid Parameter" for invalid parameter values.
+   * @return {boolean|string} - True if the parameters were successfully updated, false otherwise. Returns "invalid Parameter" for invalid parameter values.
    */
   async updateParameters(settings) {
     const parameters = ["storeName", "owner", "telephone", "email"];
@@ -489,7 +489,7 @@ class StoreService {
    * @param {string} storeID - The ID of the store to update.
    * @param {string} parameter - The parameter to update.
    * @param {string} value - The new value for the parameter.
-   * @returns {boolean} - True if the parameters were successfully updated, false otherwise.
+   * @return {boolean} - True if the parameters were successfully updated, false otherwise.
    */
   async updatingParameters(storeID, parameter, value) {
     if (!storeID || !parameter || !value) {

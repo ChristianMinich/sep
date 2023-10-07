@@ -9,7 +9,6 @@ const AuthController = require("./authController");
  * @property {ApiController} ApiController - The API controller object.
  * @property {AuthController} AuthController - The authentication controller object.
  */
-
 const apiController = new ApiController();
 const authController = new AuthController();
 

@@ -17,5 +17,6 @@
       }
     ]
   },
-  "plugins": ["prettier"]
+  "plugins": ["prettier"],
+  "endOfLine": "auto"
 }

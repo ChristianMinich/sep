@@ -74,6 +74,7 @@ class Order extends AbstractModel {
 
   /**
    * Places an order.
+   * @param {string} storeName - The name of the store.
    * @return {Promise} A promise that resolves when the order is placed.
    */
   placeOrder(storeName) {

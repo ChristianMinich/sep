@@ -87,7 +87,7 @@ POST 131.173.65.77:8080/api/setAddress -> CAN RETURN 200, 403
 	},
 };
 
-GET 131.173.65.77:8080/api/store-details -> CAN RETURN STATUS 200, 400 and 500
+GET 131.173.65.77:8080/storeDetails -> CAN RETURN STATUS 200, 400 and 500
 
 RETURNS {
     id: "",
