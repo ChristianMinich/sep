@@ -164,7 +164,7 @@ Contributions are welcome! If you find any bugs or want to add new features, ple
 
 ## License
 
-This project is licensed under the [Eclipse Public License 2.0]().
+This project is licensed under the [Eclipse Public License 2.0](https://github.com/ChristianMinich/sep/blob/main/LICENSE).
 
 ## Acknowledgments
 
