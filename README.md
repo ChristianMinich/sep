@@ -60,7 +60,7 @@ npm install --save-dev jsdoc
 ```
 2. Change Directory 
 ```
-cd webtech_project
+cd sep
 ```
 3. Generate JSDocs with directory path (./directory/)
 ```
