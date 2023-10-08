@@ -135,7 +135,7 @@ jest --collect-coverage
 |       ├── allOrdersObject.js
 |       ├── emailValidator.js
 |       ├── logger.js
-|       ├── storeDetailsObject.js
+|       └── storeDetailsObject.js
 ├── public
 │   ├── assets
 │   ├── css-warmupGame
