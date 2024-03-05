@@ -14,7 +14,7 @@
     "mariadb": "^3.2.0",
     "node-geocoder": "^4.2.0",
     "uuid": "^9.0.0",
-    "nodemailer": "^6.6.3",
+    "nodemailer": "^6.9.9",
     "ejs": "^3.1.6"
   },
   "devDependencies": {
